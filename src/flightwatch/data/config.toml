@@ -1,0 +1,30 @@
+origin = "SOF"
+destination = "TYO"
+tokyo_airports = ["NRT", "HND"]
+timezone = "Europe/Sofia"
+lead_days = 14
+horizon_months = 9
+stay_min = 10
+stay_max = 21
+stay_recommended = 14
+max_leg_minutes = 1200
+max_segments_per_leg = 2
+parties = [4, 3]
+checked_bags = 1
+stage2_margin = 1.10
+party_b_margin = 1.50
+min_request_interval_s = 1.0
+max_requests_per_run = 15000
+shards = 16
+hub_rotation_days = 7
+hubs = ["IST", "DOH", "DXB", "FRA", "MUC", "WAW", "HEL"]
+hubs_disabled = ["AUH", "VIE", "ZRH", "CDG", "AMS", "LHR", "FCO"]
+
+[budget_pp_eur]
+economy = 1200
+"premium-economy" = 1300
+
+[self_transfer]
+same_airport_min = 180
+city_change_min = 300
+city_pairs = [["IST", "SAW"], ["NRT", "HND"]]
