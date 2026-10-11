@@ -75,8 +75,9 @@ bag and meals):
   APIs.
 - **GitHub Actions:**
   - public repo, so standard runners are free and unlimited;
-  - each job has `timeout-minutes: 60` and the whole run makes at most 15,000
-    requests;
+  - each job has `timeout-minutes: 60`. The whole run makes at most 28,110
+    requests (30 jobs × 937). The 2026-10-11 live measurement implies about 24,400
+    a day;
   - the account has no payment method, so GitHub cannot bill it;
   - at the end of each run, the report states the minutes used this month.
 - Email goes through Gmail SMTP, which is free.
@@ -152,8 +153,9 @@ pairs × 2 cabins.
      under budget, which gives up nothing.
    - This is the one part not covered daily. The report says so.
 5. **Load:**
-   - about 9,000–15,000 requests a day;
-   - spread over 16 parallel GitHub Actions jobs (public repo: unlimited free
+   - about 24,000 requests a day, measured on 2026-10-11 as 199 requests for 2
+     departure dates including hubs;
+   - spread over 30 parallel GitHub Actions jobs (public repo: unlimited free
      minutes), each throttled to at least 1 s between requests;
    - about 20–30 min wall time.
 
