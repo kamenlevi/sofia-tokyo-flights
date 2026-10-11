@@ -143,8 +143,9 @@ pairs × 2 cabins.
      - a nonstop feeder SOF ↔ hub on one ticket, plus
      - a nonstop hub ↔ Tokyo return on its own ticket.
    - Hubs: those with nonstop service to both SOF and Tokyo. They are listed in
-     `config.toml`, starting with IST, DOH, DXB, AUH, FRA, MUC, VIE, ZRH, WAW, HEL,
-     CDG, AMS, LHR, FCO.
+     `config.toml`.
+     - Enabled by default: IST, DOH, DXB, FRA, MUC, WAW, HEL.
+     - Listed but disabled to cap daily load: AUH, VIE, ZRH, CDG, AMS, LHR, FCO.
    - The hub ↔ Tokyo return searches rotate through the date pairs, so every hub
      covers the full matrix every 7 days. This caps daily load.
    - Feeder one-ways are fetched only for dates where a hub return is already
