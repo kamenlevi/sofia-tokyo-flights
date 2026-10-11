@@ -8,6 +8,8 @@ retrieved = "2026-10-11"
 # End of 2nd term for grades VII-XI (grade 7 and grade 8 share the date): Fri 2027-07-02.
 # Grade 7 additionally sits the national external assessment (НВО) on 2027-06-18 and 2027-06-21.
 school_year_end = "2027-07-02"
+# 2027/28 starts on 15 September by law; after that only weekends count as off until its order is added
+next_school_year_start = "2027-09-15"
 off = [
   ["2026-10-31", "2026-11-02"],   # autumn holiday (есенна ваканция), includes Sun 1 Nov Day of the National Awakeners
   ["2026-12-01", "2026-12-31"],   # Kamen: all of December counts as off

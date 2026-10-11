@@ -14,6 +14,7 @@ class Segment:
     minutes: int
     aircraft: str
     legroom: str | None   # Google's per-flight legroom, e.g. "31 in"
+    cabin: int | None = None   # Google's cabin code: 1 economy, 2 premium economy, 3 business, 4 first
 
     @property
     def code(self) -> str:

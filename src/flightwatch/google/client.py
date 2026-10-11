@@ -37,6 +37,7 @@ class GoogleClient:
         self.clock = clock
         self.requests = 0
         self.failures = 0
+        self.empty = 0            # successful searches that listed no flights at all
         self._last: float | None = None
 
     def _throttle(self) -> None:
@@ -56,7 +57,10 @@ class GoogleClient:
             try:
                 status, text = self.transport(params)
                 if status == 200:
-                    return parse_options(text)
+                    options = parse_options(text)
+                    if not options:
+                        self.empty += 1
+                    return options
                 last = f"HTTP {status}"
                 backoff = 60 * (attempt + 1) if status == 429 else 5 * 2 ** attempt
             except ConsentPageError:

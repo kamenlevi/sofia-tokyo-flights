@@ -44,6 +44,7 @@ def search_pair_all_parties(client, cfg, d: date, r: date, cabin: str) -> list[T
     big, small = cfg.parties
     a = search_pair(client, cfg, d, r, cabin, big)
     trips = list(a.trips)
-    if a.min_pp is not None and a.min_pp <= cfg.budget_pp_eur[cabin] * cfg.party_b_margin:
+    # fewer seats can only be cheaper per person; and when 4 seats are sold out, 3 may still be free
+    if a.min_pp is None or a.min_pp <= cfg.budget_pp_eur[cabin] * cfg.party_b_margin:
         trips += search_pair(client, cfg, d, r, cabin, small).trips
     return trips

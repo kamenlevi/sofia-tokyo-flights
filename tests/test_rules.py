@@ -62,3 +62,12 @@ def test_self_transfer_needs_three_hours():
 def test_must_land_in_tokyo():
     osaka = leg(s("TK1", "SOF", "IST", datetime(2027, 3, 5, 9, 30), 90), s("TK86", "IST", "KIX", datetime(2027, 3, 5, 15, 25), 660))
     assert any("Tokyo" in p for p in check(trip(out=osaka), CFG))
+
+
+def test_premium_economy_search_with_economy_long_haul_uses_economy_budget():
+    pe_out = Leg(tuple(replace(x, cabin=2) for x in OUT.segments), OUT.minutes, OUT.layovers)
+    eco_back = Leg(tuple(replace(x, cabin=1) for x in BACK.segments), BACK.minutes, BACK.layovers)
+    probs = check(trip(out=pe_out, back=eco_back, total=5000, cabin="premium-economy"), CFG)   # €1,250 pp
+    assert any("economy" in p and "budget" in p for p in probs)
+    pe_back = Leg(tuple(replace(x, cabin=2) for x in BACK.segments), BACK.minutes, BACK.layovers)
+    assert check(trip(out=pe_out, back=pe_back, total=5000, cabin="premium-economy"), CFG) == []

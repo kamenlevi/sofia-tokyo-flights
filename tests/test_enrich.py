@@ -6,7 +6,7 @@ from flightwatch.enrich import enrich
 from flightwatch.model import Leg, Segment, Ticket, Trip
 
 CFG = load_config()
-CAL = DaysOff((), date(2027, 6, 30), "test")
+CAL = DaysOff((), date(2027, 6, 30), date(2027, 9, 15), "test")
 
 
 def s(carrier, num, o, d, dep, mins, aircraft="Boeing 787"):

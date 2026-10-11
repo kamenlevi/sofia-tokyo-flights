@@ -1,8 +1,9 @@
 import json
 
 
-def seg(o, d, dep_date, dep_t, arr_date, arr_t, mins, carrier, num, aircraft="Boeing 787", legroom="31 in"):
+def seg(o, d, dep_date, dep_t, arr_date, arr_t, mins, carrier, num, aircraft="Boeing 787", legroom="31 in", cabin=1):
     x = [None] * 23
+    x[16] = cabin
     x[3], x[6], x[8], x[10], x[11] = o, d, dep_t, arr_t, mins
     x[14], x[17], x[20], x[21] = legroom, aircraft, dep_date, arr_date
     x[22] = [carrier, num, None, f"Airline {carrier}"]

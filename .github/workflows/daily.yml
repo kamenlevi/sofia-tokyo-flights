@@ -4,7 +4,7 @@ on:
     - cron: "0 3 * * *"        # 06:00 Sofia (05:00 in winter)
   workflow_dispatch: {}
 permissions:
-  contents: write
+  contents: read
 concurrency:
   group: daily
   cancel-in-progress: false
@@ -37,6 +37,8 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -44,20 +46,23 @@ jobs:
           python-version: "3.12"
       - run: pip install .
       - uses: actions/download-artifact@v4
+        continue-on-error: true      # no shard files at all still gets an INCOMPLETE email
         with:
           path: shards
           pattern: shard-*
           merge-multiple: true
-      - run: flightwatch report --shards shards --history history/history.bin --out report.html --expected 30
+      - id: report
+        run: mkdir -p shards && flightwatch report --shards shards --history history/history.bin --out report.html --expected 30
         env:
           FLIGHTWATCH_KEY: ${{ secrets.FLIGHTWATCH_KEY }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
       # The daily commit also keeps the repo active, so GitHub does not disable the schedule after 60 idle days
-      - run: |
+      - if: always()
+        run: |
           git config user.name "flightwatch"
           git config user.email "flightwatch@users.noreply.github.com"
           git add history/history.bin
           git commit -m "History $(date -u +%F)" || echo "no change"
-          git push
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 10; done

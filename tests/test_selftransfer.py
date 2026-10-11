@@ -37,3 +37,10 @@ def test_expensive_long_haul_skips_feeders():
     g = GoogleClient(transport=t, min_interval=0)
     assert search_hub_pair(g, CFG, "IST", date(2027, 3, 5), date(2027, 3, 20), "economy", 4, {}) == []
     assert len(t.calls) == 1
+
+
+def test_long_haul_ticket_with_two_sellers_is_multi():
+    ret_other = itin("NH", [seg("NRT", "IST", [2027, 3, 20], [10], [2027, 3, 20], [17], 780, "NH", "51")], 780, [], 3000)
+    t = FakeTransport([(200, page([LH_OUT])), (200, page([ret_other])), (200, page([FEED_OUT])), (200, page([FEED_RET]))])
+    [trip] = search_hub_pair(GoogleClient(transport=t, min_interval=0), CFG, "IST", date(2027, 3, 5), date(2027, 3, 20), "economy", 4, {})
+    assert trip.tickets[1].seller == "multi"

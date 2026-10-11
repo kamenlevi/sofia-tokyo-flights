@@ -15,14 +15,14 @@ def add_months(d: date, months: int) -> date:
 
 
 def date_pairs(today: date, cfg, limit_days: int | None = None) -> list[tuple[date, date]]:
-    """Every (leave Sofia, leave Tokyo) date pair to search. Landing in Tokyo can be the next day,
-    so the gap runs from stay_min to stay_max + 1."""
+    """Every (leave Sofia, leave Tokyo) date pair to search. Landing in Tokyo is the next day, or the
+    day after for late-evening departures, so the gap runs from stay_min + 1 to stay_max + 2."""
     first, last = today + timedelta(days=cfg.lead_days), add_months(today, cfg.horizon_months)
     if limit_days is not None:
         last = min(last, first + timedelta(days=limit_days - 1))
     pairs, d = [], first
     while d <= last:
-        pairs += [(d, d + timedelta(days=g)) for g in range(cfg.stay_min, cfg.stay_max + 2)]
+        pairs += [(d, d + timedelta(days=g)) for g in range(cfg.stay_min + 1, cfg.stay_max + 3)]
         d += timedelta(days=1)
     return pairs
 

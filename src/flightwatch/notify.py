@@ -6,8 +6,7 @@ from email.message import EmailMessage
 def send_email(subject: str, text: str, html: str, attachment_html: str) -> bool:
     user, password, to = (os.environ.get(k) for k in ("GMAIL_USER", "GMAIL_APP_PASSWORD", "MAIL_TO"))
     if not (user and password and to):
-        print("email not configured; subject would be:", subject)
-        return False
+        raise RuntimeError("email not configured: set GMAIL_USER, GMAIL_APP_PASSWORD and MAIL_TO")
     msg = EmailMessage()
     msg["Subject"], msg["From"], msg["To"] = subject, user, to
     msg.set_content(text)

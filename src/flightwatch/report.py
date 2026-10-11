@@ -40,7 +40,8 @@ def _seg_html(v: SegmentView) -> str:
         seats = f"<br><small>Seats ({v.layout}): {' '.join(v.seat_plan.seats)}, {v.seat_plan.note}, {v.seat_plan.windows} window</small>"
     elif v.segment.minutes >= 360:
         seats = "<br><small>Seat plan: layout not verified</small>"
-    return (f"<div><b>{escape(s.code)}</b> {escape(s.airline)}, {escape(s.aircraft)}<br>{escape(leg)} ({_hm(s.minutes)})"
+    cabin = {1: "economy", 2: "premium economy", 3: "business", 4: "first"}.get(s.cabin, "")
+    return (f"<div><b>{escape(s.code)}</b> {escape(s.airline)}, {escape(s.aircraft)}{', ' + cabin if cabin else ''}<br>{escape(leg)} ({_hm(s.minutes)})"
             f"<br><small>Legroom {legroom}{table}. Meals: {escape(v.meals)}</small>{seats}</div>")
 
 

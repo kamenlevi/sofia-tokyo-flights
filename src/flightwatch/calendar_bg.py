@@ -9,6 +9,7 @@ from pathlib import Path
 class DaysOff:
     ranges: tuple[tuple[date, date], ...]
     school_year_end: date
+    next_school_year_start: date
     source: str
 
     @classmethod
@@ -17,10 +18,12 @@ class DaysOff:
                 resources.files("flightwatch.data").joinpath("bg_calendar_2026_27.toml").read_text())
         raw = tomllib.loads(text)
         return cls(tuple((date.fromisoformat(a), date.fromisoformat(b)) for a, b in raw["off"]),
-                   date.fromisoformat(raw["school_year_end"]), raw["source"])
+                   date.fromisoformat(raw["school_year_end"]), date.fromisoformat(raw["next_school_year_start"]),
+                   raw["source"])
 
     def is_off(self, d: date) -> bool:
-        return d.weekday() >= 5 or d > self.school_year_end or any(a <= d <= b for a, b in self.ranges)
+        summer = self.school_year_end < d < self.next_school_year_start
+        return d.weekday() >= 5 or summer or any(a <= d <= b for a, b in self.ranges)
 
     def school_days_missed(self, first: date, last: date) -> int:
         return sum(1 for i in range((last - first).days + 1) if not self.is_off(first + timedelta(days=i)))

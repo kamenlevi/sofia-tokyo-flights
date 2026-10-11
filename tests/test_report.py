@@ -8,7 +8,7 @@ from flightwatch.report import render_html, render_email, rank
 from flightwatch.shard import Coverage
 
 CFG = load_config()
-CAL = DaysOff((), date(2027, 6, 30), "https://mon.bg/x")
+CAL = DaysOff((), date(2027, 6, 30), date(2027, 9, 15), "https://mon.bg/x")
 
 
 def s(num, o, d, dep, mins):

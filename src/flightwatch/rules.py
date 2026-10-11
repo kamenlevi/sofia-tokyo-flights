@@ -45,9 +45,24 @@ def price_pp(trip: Trip, addon_pp: float = 0.0) -> float:
     return trip.per_person_eur + addon_pp
 
 
+LONG_HAUL_MIN = 360
+
+
+def budget_cabin(trip: Trip) -> str:
+    """The premium economy budget applies only if every long-haul flight really is premium economy."""
+    if trip.cabin == "premium-economy":
+        for s in trip.outbound.segments + trip.inbound.segments:
+            if s.minutes >= LONG_HAUL_MIN and s.cabin is not None and s.cabin < 2:
+                return "economy"
+    return trip.cabin
+
+
 def check(trip: Trip, cfg, addon_pp: float = 0.0) -> list[str]:
     p = structural_problems(trip, cfg)
-    budget = cfg.budget_pp_eur[trip.cabin]
+    cabin = budget_cabin(trip)
+    budget = cfg.budget_pp_eur[cabin]
     if price_pp(trip, addon_pp) > budget:
-        p.append(f"€{price_pp(trip, addon_pp):,.0f} per person is over the €{budget:,} budget")
+        label = "economy" if cabin != trip.cabin else ""
+        p.append(f"€{price_pp(trip, addon_pp):,.0f} per person is over the €{budget:,} {label + ' ' if label else ''}budget"
+                 + (" (a long-haul flight is economy, not premium economy)" if label else ""))
     return p

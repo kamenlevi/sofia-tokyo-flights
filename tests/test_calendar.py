@@ -26,3 +26,8 @@ def test_school_days_missed_counts_inclusive_weekdays_not_off():
     assert CAL.school_days_missed(first, last) == expected
     assert CAL.school_days_missed(date(2027, 3, 5), date(2027, 3, 5)) == (0 if CAL.is_off(date(2027, 3, 5)) else 1)
     assert CAL.school_days_missed(date(2026, 12, 5), date(2026, 12, 22)) == 0
+
+
+def test_next_school_year_counts_school_days_again():
+    assert not CAL.is_off(date(2027, 9, 20))       # a Monday in the 2027/28 school year
+    assert CAL.is_off(date(2027, 8, 16))           # summer holiday

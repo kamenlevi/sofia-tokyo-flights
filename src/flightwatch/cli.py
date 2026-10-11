@@ -60,11 +60,15 @@ def _report(res: ShardResult, args, day: date) -> None:
             history.record_best(hist, cabin, party, min(prices, default=None), day)
     html = render_html(shown, res.coverage, day, hist, cal.source)
     Path(args.out).write_text(html)
+    history.save(Path(args.history), key, hist)
     subject, text, body = render_email(shown, res.coverage, day, hist)
-    print(subject)
+    if not os.environ.get("CI"):          # CI logs of a public repo are public: keep prices out of them
+        print(subject)
     if not args.no_email:
         send_email(subject, text, body, html)
-    history.save(Path(args.history), key, hist)
+    if not res.coverage.complete:
+        print("search incomplete:", "; ".join(res.coverage.failures[:3]), file=sys.stderr)
+        sys.exit(1)               # a red run lets the Mac fallback take over
 
 
 def main(argv=None):
@@ -99,8 +103,13 @@ def main(argv=None):
     elif args.cmd == "fallback-check":
         url = (f"https://api.github.com/repos/{args.repo}/actions/workflows/daily.yml/runs"
                f"?status=success&created=%3E%3D{day.isoformat()}")
-        with urllib.request.urlopen(url, timeout=30) as r:
-            sys.exit(0 if json.load(r).get("total_count", 0) > 0 else 1)
+        try:
+            with urllib.request.urlopen(url, timeout=30) as r:
+                ok = json.load(r).get("total_count", 0) > 0
+        except Exception as e:      # offline or rate-limited: unknown, so do not start an 8-hour run
+            print("fallback-check: could not ask GitHub:", e, file=sys.stderr)
+            sys.exit(2)
+        sys.exit(0 if ok else 1)
 
 
 if __name__ == "__main__":

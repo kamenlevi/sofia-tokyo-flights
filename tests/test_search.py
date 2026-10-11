@@ -45,3 +45,9 @@ def test_party_b_searched_only_when_party_a_within_1_5x():
     assert [x.party for x in trips] == [3]
     g2, t2 = make([page([out_opt(9000)])])          # A: €2,250 pp, so B is not searched
     assert search_pair_all_parties(g2, CFG, D, R, "economy") == [] and len(t2.calls) == 1
+
+
+def test_party_b_searched_when_party_a_finds_nothing():
+    g, t = make([page([]), page([out_opt(3300)]), page([ret_opt(3300)])])
+    trips = search_pair_all_parties(g, CFG, D, R, "economy")
+    assert [x.party for x in trips] == [3]

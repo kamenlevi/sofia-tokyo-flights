@@ -22,6 +22,8 @@ class Coverage:
     stopped_early: bool = False
     shards_seen: int = 1
     shards_expected: int = 1
+    window_pairs: int = 0          # pair×cabin searches in the whole window, across all shards
+    window_hub_pairs: int = 0
 
     @property
     def complete(self) -> bool:
@@ -46,8 +48,11 @@ def run_shard(client, cfg, today: date, index: int, total: int, limit_days: int 
     pairs = shard(all_pairs, total, index)
     hub_pairs = shard(hub_pairs_today(all_pairs, today, cfg.hub_rotation_days), total, index)
     cabins = list(cfg.budget_pp_eur)
+    all_hub = hub_pairs_today(all_pairs, today, cfg.hub_rotation_days)
     cov = Coverage(pairs_planned=len(pairs) * len(cabins),
-                   hub_pairs_planned=len(hub_pairs) * len(cabins) * len(cfg.hubs))
+                   hub_pairs_planned=len(hub_pairs) * len(cabins) * len(cfg.hubs),
+                   window_pairs=len(all_pairs) * len(cabins),
+                   window_hub_pairs=len(all_hub) * len(cabins) * len(cfg.hubs))
     trips: list[Trip] = []
     try:
         for d, r in pairs:
@@ -74,6 +79,12 @@ def run_shard(client, cfg, today: date, index: int, total: int, limit_days: int 
         cov.stopped_early = True
         cov.failures.insert(0, f"request budget reached: {e}")
     cov.requests = client.requests
+    empty = getattr(client, "empty", 0)
+    if client.requests >= 20 and empty >= 0.9 * client.requests:
+        # Real results always list flights on most dates; this looks like a changed page, not empty skies
+        cov.stopped_early = True
+        cov.failures.insert(0, f"Google returned no flights for {empty} of {client.requests} searches; "
+                               "its page layout may have changed")
     return ShardResult(trips, cov)
 
 
@@ -88,8 +99,13 @@ def merge_shards(paths: list[Path], key: str, expected: int) -> ShardResult:
     for p in paths:
         data = decrypt_json(Path(p).read_bytes(), key)
         trips += [trip_from_dict(t) for t in data["trips"]]
-        cov.merge(Coverage(**{k: v for k, v in data["coverage"].items() if k not in ("shards_seen", "shards_expected")}))
+        part = Coverage(**{k: v for k, v in data["coverage"].items() if k not in ("shards_seen", "shards_expected")})
+        cov.merge(part)
+        cov.window_pairs, cov.window_hub_pairs = part.window_pairs, part.window_hub_pairs
         cov.shards_seen += 1
     if cov.shards_seen < expected:
         cov.failures.insert(0, f"{expected - cov.shards_seen} of {expected} search jobs produced no results")
+        # measure coverage against the whole window, not only the shards that arrived
+        cov.pairs_planned = max(cov.window_pairs, 1)
+        cov.hub_pairs_planned = cov.window_hub_pairs
     return ShardResult(trips, cov)

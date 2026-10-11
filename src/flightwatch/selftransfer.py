@@ -39,7 +39,7 @@ def search_hub_pair(client, cfg, hub: str, d: date, r: date, cabin: str, adults:
                     if f.leg.arr < o.leg.dep]
         for ret in rets:
             lh_url = booking_url(build_params(legs(o.selected(), ret.selected()), cabin, adults, 0, None, cfg.checked_bags))
-            lh = Ticket(o.seller, tuple(s.code for s in o.leg.segments + ret.leg.segments), ret.total_eur, lh_url)
+            lh = Ticket(o.seller if o.seller == ret.seller else "multi", tuple(s.code for s in o.leg.segments + ret.leg.segments), ret.total_eur, lh_url)
             feed_back = [(f, u) for f, u in _feeders(client, cfg, hub, cfg.origin, ret.leg.arr.date(), adults, cache)
                          if f.leg.dep > ret.leg.arr]
             for fo, fo_url in feed_out:

@@ -74,3 +74,16 @@ def test_recorded_fixtures_parse(name):
         for s in o.leg.segments:
             assert re.fullmatch(r"[A-Z0-9]{2}", s.carrier) and s.number
             assert s.arr > s.dep or s.arr.date() >= s.dep.date()
+
+
+def test_cabin_per_segment():
+    x = itin("LH", [seg("SOF", "MUC", [2027, 3, 5], [6], [2027, 3, 5], [7], 125, "LH", "1703", cabin=1),
+                    seg("MUC", "HND", [2027, 3, 5], [10], [2027, 3, 6], [7], 750, "NH", "218", cabin=2)], 1500, [180], 9000)
+    [o] = parse_options(page([x]))
+    assert [s.cabin for s in o.leg.segments] == [1, 2]
+
+
+def test_options_without_any_price_is_a_format_error():
+    nop = itin("TK", OVERNIGHT[0][2], 905, [140], None)
+    with pytest.raises(GoogleFormatError):
+        parse_options(page([nop]))

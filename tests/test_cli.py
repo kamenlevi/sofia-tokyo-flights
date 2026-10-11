@@ -25,3 +25,26 @@ def test_local_pipeline_offline(tmp_path, monkeypatch):
     html = report.read_text()
     assert "TK50" in html and "100%" in html
     assert (tmp_path / "h.bin").exists()
+
+
+def test_incomplete_run_exits_nonzero_after_writing_report(tmp_path, monkeypatch):
+    from googlefake import CONSENT
+    import pytest
+    monkeypatch.setenv("FLIGHTWATCH_KEY", new_key())
+    monkeypatch.setattr(cli, "make_transport", lambda: (lambda p: (200, CONSENT)))
+    monkeypatch.setattr(cli, "today", lambda: date(2027, 1, 10))
+    report = tmp_path / "report.html"
+    with pytest.raises(SystemExit) as e:
+        cli.main(["local", "--limit-days", "1", "--no-email", "--no-hubs", "--interval", "0",
+                  "--history", str(tmp_path / "h.bin"), "--out", str(report)])
+    assert e.value.code == 1 and "INCOMPLETE" in report.read_text()
+
+
+def test_fallback_check_network_error_is_unknown(monkeypatch):
+    import pytest
+    def boom(*a, **k):
+        raise OSError("offline")
+    monkeypatch.setattr(cli.urllib.request, "urlopen", boom)
+    with pytest.raises(SystemExit) as e:
+        cli.main(["fallback-check", "--repo", "x/y"])
+    assert e.value.code == 2

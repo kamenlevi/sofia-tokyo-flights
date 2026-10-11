@@ -38,7 +38,8 @@ def _segment(x: list) -> Segment:
     flight = x[22]
     airline = flight[3] if len(flight) > 3 and flight[3] else flight[0]
     return Segment(flight[0], str(flight[1]), airline, x[3], x[6],
-                   datetime(*x[20], dh, dm), datetime(*x[21], ah, am), x[11], x[17] or "", x[14])
+                   datetime(*x[20], dh, dm), datetime(*x[21], ah, am), x[11], x[17] or "", x[14],
+                   x[16] if len(x) > 16 and isinstance(x[16], int) else None)
 
 
 def _payload(html: str):
@@ -82,4 +83,6 @@ def parse_options(html: str) -> list[Option]:
                     best[leg.key] = opt
     except (TypeError, IndexError, KeyError) as e:
         raise GoogleFormatError(f"unexpected itinerary layout: {e!r}") from e
+    if best and all(o.total_eur is None for o in best.values()):
+        raise GoogleFormatError("itineraries listed but none has a price; price field may have moved")
     return list(best.values())

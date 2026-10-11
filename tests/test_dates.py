@@ -20,7 +20,7 @@ def test_window_bounds_and_gaps_across_new_year():
     assert outs[0] == date(2027, 1, 3)              # +14 days
     assert outs[-1] == date(2027, 9, 20)            # +9 months
     gaps = sorted({(r - d).days for d, r in pairs})
-    assert gaps == list(range(10, 23))              # landing may be the next day
+    assert gaps == list(range(11, 24))              # landing is the next day or the one after
     assert len(pairs) == len(outs) * 13
 
 
