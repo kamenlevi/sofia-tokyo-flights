@@ -74,8 +74,9 @@ bag and meals):
 - The daily run is plain Python. It makes no LLM or Claude calls and uses no paid
   APIs.
 - **GitHub Actions:**
-  - the job has `timeout-minutes: 45`, so a month of runs stays under 1,400 of the
-    2,000 free private-repo minutes;
+  - public repo, so standard runners are free and unlimited;
+  - each job has `timeout-minutes: 60` and the whole run makes at most 15,000
+    requests;
   - the account has no payment method, so GitHub cannot bill it;
   - at the end of each run, the report states the minutes used this month.
 - Email goes through Gmail SMTP, which is free.
@@ -98,70 +99,69 @@ bag and meals):
 - Prices are in EUR. Where a source quotes another currency, it is converted at the
   ECB daily reference rate and the converted price is marked.
 
-## Search strategy: lossless pruning
+## Search strategy (revised after the 2026-10-11 spike)
 
-The full set of combinations is about:
-- 255 outbound dates × 12 stay lengths × 2 cabins, multiplied by every itinerary on
-  each date,
-- plus every self-transfer pairing through each hub.
+**What the spike showed** (throwaway code, live Google Flights, 2026-10-11):
+- **Plain search-page requests work** (`/travel/flights?tfs=…`).
+  - From an EU address they need the "reject all" consent cookie `SOCS=CAI`.
+  - About 0.4–1 s per request. 40 back-to-back requests: no throttling.
+- **Each result lists every itinerary** across both result sections, with:
+  - flight numbers and aircraft;
+  - legroom per segment ("31 in");
+  - layover minutes and total duration;
+  - the total price for all passengers. `checked_bags=1` adds Google's estimated
+    bag fee.
+- **A round-trip search** returns the outbound options, each with the cheapest
+  round-trip total. Encoding the chosen outbound as selected segments (FlightData
+  field 4) returns its matching returns with exact totals.
+- **Not usable:** Google's price calendar (GetCalendarGraph) and booking-options
+  data now require a BotGuard token. They are not used, and nothing tries to get
+  around them.
+- **Google offers no self-transfer itineraries on SOF↔TYO.** Separate tickets must
+  be built by the app.
+- **One-way fares from Tokyo are high** (about €1,100–1,750 per person), so
+  through-fares on one return ticket are the main source of deals.
 
-Searching each combination as its own request every day is not possible from free
-sources. Instead, the search uses a **lower-bound** step that gives exactly the same
-answer:
+**Every-combination search, every day.** Date pairs (d, r): d from today + 14 to
+today + 9 months (Europe/Sofia dates), and r − d from 10 to 22. That is about 3,300
+pairs × 2 cabins.
 
-1. **Price calendars (cheap, a few hundred requests a day).** For each route and
-   cabin, fetch the cheapest unfiltered price for every date, and for every
-   (outbound, return) pair on the round-trip grid.
-   - An unfiltered cheapest price is a lower bound on any itinerary that meets the
-     rules: adding the 1-stop limit, the 20 h limit or the 23 kg bag can only make
-     the price go up.
-   - If the lower bound for a date or a date pair is above budget × 1.15, no
-     qualifying itinerary can exist there, so it is skipped.
-   - The 15% margin covers stale calendar prices.
-2. **Full searches for every date and pair that survives.** Fetch every itinerary,
-   then evaluate every outbound × return combination for every stay length from 10
-   to 21 days, for both cabins and both parties.
-3. **Self-transfer combinations.** Combine one-way legs SOF → hub → Tokyo and back
-   through the hubs that serve both cities:
-   - IST, SAW, DOH, DXB, AUH, FRA, MUC, VIE, ZRH, WAW, HEL, CDG, AMS, LHR, FCO, MXP,
-     BCN, ATH, BUD, OTP;
-   - the list is a config file, extended by any hub seen in the results.
+1. **Stage 1, every pair, every day:**
+   - one round-trip search for 4 adults, at most 1 stop, at most 1,200 min per
+     direction, 1 checked bag;
+   - result: every outbound itinerary with its cheapest round-trip total.
+   - Google's prices here are live, so they bound every pairing of that outbound.
+2. **Stage 2:** for each outbound whose cheapest total per person is at most
+   budget × 1.10, a selected-outbound search lists every return with its exact
+   total. Every outbound × return pairing is then checked by the rules engine.
+   - The 10% margin covers estimated bag fees.
+3. **Party B (3 people):** a fare per person for 3 is never above the fare for 4
+   (fewer seats needed). So for pairs whose Party A cheapest per person is at most
+   budget × 1.5, stages 1 and 2 are repeated with 3 adults.
+4. **Separate tickets through hubs:**
+   - With at most 2 flights per direction, a self-transfer is:
+     - a nonstop feeder SOF ↔ hub on one ticket, plus
+     - a nonstop hub ↔ Tokyo return on its own ticket.
+   - Hubs: those with nonstop service to both SOF and Tokyo. They are listed in
+     `config.toml`, starting with IST, DOH, DXB, AUH, FRA, MUC, VIE, ZRH, WAW, HEL,
+     CDG, AMS, LHR, FCO.
+   - The hub ↔ Tokyo return searches rotate through the date pairs, so every hub
+     covers the full matrix every 7 days. This caps daily load.
+   - Feeder one-ways are fetched only for dates where a hub return is already
+     under budget, which gives up nothing.
+   - This is the one part not covered daily. The report says so.
+5. **Load:**
+   - about 9,000–15,000 requests a day;
+   - spread over 16 parallel GitHub Actions jobs (public repo: unlimited free
+     minutes), each throttled to at least 1 s between requests;
+   - about 20–30 min wall time.
 
-   Feeder legs (SOF ↔ hub) come from monthly fare calendars. The long-haul legs
-   (hub ↔ Tokyo) are pruned in the same way as step 1, before any full search.
-4. **Every date stays covered.** A date whose lower bound drops back under the
-   threshold is fully searched on the same day. The calendars themselves are
-   refreshed every day for the whole window.
-
-This keeps the guarantee: a qualifying combination is missed only if a source does
-not list that flight at all, or if its calendar shows a price more than 15% above
-the real one.
-
-## Data sources
-
-| Source | Used for | Cost | Risk |
-|---|---|---|---|
-| Google Flights, through the `fast-flights` library plus Google's calendar/date-grid endpoints | Price calendars, full itinerary lists, self-transfer legs, "book with airline" options | Free | Unofficial and against Google's terms of service, so it can break when Google changes the site. Volume is kept polite and spread over the run. No CAPTCHA or bot-check evasion. If the library breaks, the run says so in the email and does not report "no deals". |
-| Ryanair / Wizz Air public fare calendars | Feeder legs SOF ↔ European hubs | Free | Unofficial endpoints |
-| Google Flights per-flight details | Legroom shown on each flight ("average / above-average legroom", pitch in inches), aircraft type, and Google's own bag and price notes | Free | Same as above |
-| Static airline tables (`data/airlines.toml`) | Per airline, aircraft and cabin: seat pitch and width, seat layout (e.g. 3-3-3), extra-legroom seat products and their typical price, meals included per leg length, checked-bag allowance and fee per fare family | Free | Can drift. Each entry carries its source URL and date, and the report shows them |
-| Static legroom table (seat pitch and width per airline, aircraft type and cabin, from public airline specs) | Legroom when no seat map is available | Free | Can drift; dated in the report |
-| Bulgarian Ministry of Education 2026/27 school-year order, and the Bulgarian public holidays | School-day scoring | Free | Dates must come from the official order (mon.bg), not guesses |
-
-Duffel is dropped. With no bookings, every search would be charged, so it breaks
-the cost rule. That means no live seat maps:
-- seating is planned from the cabin layout;
-- the plan is marked "choose these seats when booking on the airline's site";
-- the report says that seat availability has not been verified live.
-
-Skyscanner, Kiwi and Amadeus are left out. Skyscanner's API is for partners only and
-its site blocks bots. Kiwi's API takes new users by invitation only. Amadeus's free
-self-service API reportedly closed on 2026-07-17.
-
-**First implementation step (spike):** confirm that the Google Flights price calendar
-and date grid can be read for SOF → TYO in both cabins, and how many requests a run
-can make before it is throttled. The strategy above depends on that. If it turns out
-not to be possible, stop and come back with alternatives before building further.
+**Bookability without booking data:**
+- A through-fare whose segments are all sold by one airline group is marked
+  bookable on that airline's site.
+- Each result gets a pre-filled search link for that airline's own site.
+- The report notes that Google's price is the cheapest seller's. The airline's own
+  price can be slightly higher.
 
 ## Rules engine
 
@@ -223,7 +223,9 @@ tested in isolation.
 ## Architecture
 
 The code is a Python 3.12 package, `flightwatch`, in its own repo at
-`~/sofia-tokyo-flights` (a private GitHub repo once Kamen agrees to it).
+`~/sofia-tokyo-flights` (a public GitHub repo, chosen by Kamen 2026-10-11 for unlimited free
+Actions minutes; results and history are stored encrypted, and passwords are kept
+in secrets).
 
 ```
 flightwatch/
