@@ -3,7 +3,7 @@
 <plist version="1.0"><dict>
   <key>Label</key><string>com.kamen.flightwatch</string>
   <key>ProgramArguments</key><array><string>/bin/zsh</string><string>-lc</string>
-    <string>$HOME/sofia-tokyo-flights/mac/fallback.sh</string></array>
+    <string>/Users/kamen/sofia-tokyo-flights/mac/fallback.sh</string></array>
   <key>StartCalendarInterval</key><dict><key>Hour</key><integer>12</integer><key>Minute</key><integer>0</integer></dict>
   <key>StandardOutPath</key><string>/tmp/flightwatch.log</string>
   <key>StandardErrorPath</key><string>/tmp/flightwatch.log</string>
