@@ -87,7 +87,7 @@ def main(argv=None):
     shard_p.add_argument("--total", type=int, required=True)
     shard_p.add_argument("--out", required=True)
     report_p.add_argument("--shards", required=True)
-    report_p.add_argument("--expected", type=int, default=30)
+    report_p.add_argument("--expected", type=int, default=40)
     fc = sub.add_parser("fallback-check")
     fc.add_argument("--repo", required=True)
     args = ap.parse_args(argv)

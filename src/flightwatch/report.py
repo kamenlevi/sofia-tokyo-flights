@@ -107,8 +107,14 @@ apply();
 """
 
 
+MAX_ROWS = 500   # ~2.5 MB; keeps the attachment far below Gmail's 25 MB limit
+
+
 def render_html(results: list[Result], cov, today: date, hist: dict, calendar_source: str) -> str:
-    ranked = rank(results)
+    everything = rank(results)
+    ranked = everything[:MAX_ROWS]
+    capped = (f"<p><b>Showing the best {MAX_ROWS} of {len(everything):,} trips</b> (fewest school days, then cheapest).</p>"
+              if len(everything) > MAX_ROWS else "")
     failures = "".join(f"<li>{escape(f)}</li>" for f in cov.failures[:50])
     body = "".join(_row(r, hist) for r in ranked) or "<tr><td colspan=7>No trips within 10% of budget.</td></tr>"
     return f"""<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
@@ -118,7 +124,7 @@ def render_html(results: list[Result], cov, today: date, hist: dict, calendar_so
 <small>Prices from Google Flights (cheapest seller). The airline's own price can be a little higher; open the link to check.
 Green rows are under budget (economy €1,200 / premium economy €1,300 per person, 23 kg bag included); yellow rows are within 10%.
 School days use the official calendar: {escape(calendar_source)}. All of December counts as off.</small></div>
-<div class=filters><label>Cabin <select id=cabin><option value="">all</option><option value=economy>economy</option>
+{capped}<div class=filters><label>Cabin <select id=cabin><option value="">all</option><option value=economy>economy</option>
 <option value=premium-economy>premium economy</option></select></label>
 <label>People <select id=party><option value="">all</option><option>4</option><option>3</option></select></label>
 <label><input type=checkbox id=ok checked> under budget only</label>

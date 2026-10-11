@@ -44,3 +44,12 @@ def test_long_haul_ticket_with_two_sellers_is_multi():
     t = FakeTransport([(200, page([LH_OUT])), (200, page([ret_other])), (200, page([FEED_OUT])), (200, page([FEED_RET]))])
     [trip] = search_hub_pair(GoogleClient(transport=t, min_interval=0), CFG, "IST", date(2027, 3, 5), date(2027, 3, 20), "economy", 4, {})
     assert trip.tickets[1].seller == "multi"
+
+
+def test_hub_party_b_skipped_when_party_a_far_over_budget():
+    from flightwatch.selftransfer import search_hub_pair_all_parties
+    pricey = itin("TK", LH_OUT[0][2], 675, [], 9000)          # €2,250 pp > 1.5 × €1,200
+    t = FakeTransport([(200, page([pricey]))])
+    g = GoogleClient(transport=t, min_interval=0)
+    assert search_hub_pair_all_parties(g, CFG, "IST", date(2027, 3, 5), date(2027, 3, 20), "economy", {}) == []
+    assert len(t.calls) == 1

@@ -56,3 +56,10 @@ def test_deals_subject():
     subject, text, html = render_email([result(4400)], FULL, date(2026, 10, 12), {})
     assert subject.startswith("SOF–TYO: 1 deal under budget")
     assert "TK50" in text and "TK50" in html
+
+
+def test_attachment_is_capped_to_stay_under_email_limits():
+    many = [result(4400)] * 600
+    html = render_html(many, FULL, date(2026, 10, 12), {}, CAL.source)
+    assert html.count("<tr class=") == 500
+    assert "best 500 of 600" in html

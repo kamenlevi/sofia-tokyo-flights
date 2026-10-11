@@ -38,6 +38,7 @@ class GoogleClient:
         self.requests = 0
         self.failures = 0
         self.empty = 0            # successful searches that listed no flights at all
+        self.priceless = 0        # searches that listed flights but no price for any of them
         self._last: float | None = None
 
     def _throttle(self) -> None:
@@ -60,6 +61,8 @@ class GoogleClient:
                     options = parse_options(text)
                     if not options:
                         self.empty += 1
+                    elif all(o.total_eur is None for o in options):
+                        self.priceless += 1
                     return options
                 last = f"HTTP {status}"
                 backoff = 60 * (attempt + 1) if status == 429 else 5 * 2 ** attempt

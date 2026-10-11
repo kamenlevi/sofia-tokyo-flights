@@ -47,3 +47,12 @@ def test_merge_with_no_shards_is_zero_percent(tmp_path):
     from flightwatch.report import _pct
     merged = merge_shards([], new_key(), expected=30)
     assert not merged.coverage.complete and _pct(merged.coverage) == 0
+
+
+def test_shard_where_every_page_lacks_prices_is_incomplete():
+    from googlefake import itin, seg
+    nop = page([itin("TK", [seg("SOF", "IST", [2027, 1, 10], [9], [2027, 1, 10], [11], 90, "TK", "1")], 90, [], None)])
+    cfg = replace(CFG, horizon_months=0, lead_days=0)
+    t = FakeTransport([(200, nop)] * 60)
+    res = run_shard(GoogleClient(transport=t, min_interval=0), cfg, date(2027, 1, 10), 0, 1)
+    assert not res.coverage.complete and "price" in res.coverage.failures[0]

@@ -8,7 +8,7 @@ from flightwatch.google.client import BudgetExceeded, SearchFailed
 from flightwatch.google.parse import ConsentPageError
 from flightwatch.model import Trip, trip_from_dict, trip_to_dict
 from flightwatch.search import search_pair_all_parties
-from flightwatch.selftransfer import search_hub_pair
+from flightwatch.selftransfer import search_hub_pair_all_parties
 
 
 @dataclass
@@ -67,8 +67,7 @@ def run_shard(client, cfg, today: date, index: int, total: int, limit_days: int 
             for d, r in hub_pairs:
                 for cabin in cabins:
                     try:
-                        for adults in cfg.parties:
-                            trips += search_hub_pair(client, cfg, hub, d, r, cabin, adults, cache)
+                        trips += search_hub_pair_all_parties(client, cfg, hub, d, r, cabin, cache)
                         cov.hub_pairs_done += 1
                     except SearchFailed as e:
                         cov.failures.append(f"hub {hub} {cabin} {d}→{r}: {e}")
@@ -85,6 +84,12 @@ def run_shard(client, cfg, today: date, index: int, total: int, limit_days: int 
         cov.stopped_early = True
         cov.failures.insert(0, f"Google returned no flights for {empty} of {client.requests} searches; "
                                "its page layout may have changed")
+    priceless = getattr(client, "priceless", 0)
+    listed = client.requests - empty
+    if listed >= 20 and priceless >= 0.9 * listed:
+        cov.stopped_early = True
+        cov.failures.insert(0, f"Google listed flights without any price on {priceless} of {listed} searches; "
+                               "its price field may have moved")
     return ShardResult(trips, cov)
 
 

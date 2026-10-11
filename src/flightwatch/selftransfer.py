@@ -22,13 +22,29 @@ def _feeders(client, cfg, origin: str, dest: str, day: date, adults: int, cache:
 
 
 def search_hub_pair(client, cfg, hub: str, d: date, r: date, cabin: str, adults: int, cache: FeederCache) -> list[Trip]:
+    return _hub_pair(client, cfg, hub, d, r, cabin, adults, cache)[0]
+
+
+def search_hub_pair_all_parties(client, cfg, hub: str, d: date, r: date, cabin: str, cache: FeederCache) -> list[Trip]:
+    """Same rule as through-fares: search 3 people when 4 found nothing or came within budget × party_b_margin."""
+    big, small = cfg.parties
+    trips, min_pp = _hub_pair(client, cfg, hub, d, r, cabin, big, cache)
+    if min_pp is None or min_pp <= cfg.budget_pp_eur[cabin] * cfg.party_b_margin:
+        trips += _hub_pair(client, cfg, hub, d, r, cabin, small, cache)[0]
+    return trips
+
+
+def _hub_pair(client, cfg, hub, d, r, cabin, adults, cache) -> tuple[list[Trip], float | None]:
     budget = cfg.budget_pp_eur[cabin]
 
     def legs(sel_out=(), sel_ret=()):
         return [LegQuery(d.isoformat(), hub, cfg.destination, sel_out), LegQuery(r.isoformat(), cfg.destination, hub, sel_ret)]
 
-    outs = [o for o in client.search(build_params(legs(), cabin, adults, 0, None, cfg.checked_bags))
-            if o.total_eur is not None and o.total_eur / adults <= budget]
+    stage1 = [o for o in client.search(build_params(legs(), cabin, adults, 0, None, cfg.checked_bags))
+              if o.total_eur is not None]
+    min_pp = min((o.total_eur for o in stage1), default=None)
+    min_pp = None if min_pp is None else min_pp / adults
+    outs = [o for o in stage1 if o.total_eur / adults <= budget]
     trips = []
     for o in outs:
         rets = [x for x in client.search(build_params(legs(o.selected()), cabin, adults, 0, None, cfg.checked_bags))
@@ -48,4 +64,4 @@ def search_hub_pair(client, cfg, hub: str, d: date, r: date, cabin: str, adults:
                         Ticket(fo.seller, tuple(s.code for s in fo.leg.segments), fo.total_eur, fo_url),
                         lh,
                         Ticket(fb.seller, tuple(s.code for s in fb.leg.segments), fb.total_eur, fb_url))))
-    return trips
+    return trips, min_pp

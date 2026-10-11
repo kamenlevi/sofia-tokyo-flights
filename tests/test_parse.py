@@ -83,7 +83,7 @@ def test_cabin_per_segment():
     assert [s.cabin for s in o.leg.segments] == [1, 2]
 
 
-def test_options_without_any_price_is_a_format_error():
+def test_page_where_no_option_has_a_price_still_parses():
+    # Google does list sold-out premium economy itineraries without prices; one such page is normal
     nop = itin("TK", OVERNIGHT[0][2], 905, [140], None)
-    with pytest.raises(GoogleFormatError):
-        parse_options(page([nop]))
+    assert [o.total_eur for o in parse_options(page([nop]))] == [None]

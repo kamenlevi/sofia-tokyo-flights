@@ -64,3 +64,11 @@ def test_request_budget():
     g.search({})
     with pytest.raises(BudgetExceeded):
         g.search({})
+
+
+def test_counts_pages_with_flights_but_no_prices():
+    nop = (200, page([itin("TK", [seg("SOF", "IST", [2027, 3, 5], [9, 30], [2027, 3, 5], [12], 90, "TK", "1")], 90, [], None)]))
+    g, t, c = client([nop, OK], min_interval=0)
+    g.search({})
+    g.search({})
+    assert g.priceless == 1 and g.empty == 0

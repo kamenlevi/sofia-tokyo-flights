@@ -83,6 +83,4 @@ def parse_options(html: str) -> list[Option]:
                     best[leg.key] = opt
     except (TypeError, IndexError, KeyError) as e:
         raise GoogleFormatError(f"unexpected itinerary layout: {e!r}") from e
-    if best and all(o.total_eur is None for o in best.values()):
-        raise GoogleFormatError("itineraries listed but none has a price; price field may have moved")
     return list(best.values())
