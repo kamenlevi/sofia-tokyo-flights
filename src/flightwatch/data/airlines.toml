@@ -1,0 +1,1283 @@
+# Airline facts for the report. Each entry: official/seat-map sources, checked 2026-10-11.
+# Missing keys mean 'not verified'.
+
+[TK]
+name = "Turkish Airlines"
+site = "https://www.turkishairlines.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Paid extra legroom seats (exit rows / bulkhead), via seat selection"
+extra_legroom_eur = [21, 215]
+exit_row_min_age = 16
+source = "https://www.turkishairlines.com/en-gb/any-questions/seat-selection-terms-and-conditions/"
+checked = "2026-10-11"
+
+[[TK.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17.5
+
+[[TK.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17.9
+
+[[TK.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 18
+
+[[TK.layouts]]
+match = "A321neo"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31
+width_in = 18
+
+[[TK.layouts]]
+match = "737"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 30
+width_in = 17.2
+
+[LO]
+name = "LOT Polish Airlines"
+site = "https://www.lot.com"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+extra_legroom = "Extra legroom seats (exit rows / bulkhead), paid or via Extra Legroom Bidding"
+source = "https://www.lot.com/de/de/journey/on-board/food-on-the-plane/meals-and-drinks-lot-economy-class"
+checked = "2026-10-11"
+
+[[LO.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17.5
+
+[[LO.layouts]]
+match = "787"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+
+[[LO.layouts]]
+match = "737"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 30
+width_in = 17
+
+[[LO.layouts]]
+match = "Embraer 1"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 31
+width_in = 17.3
+
+[QR]
+name = "Qatar Airways"
+site = "https://www.qatarairways.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+exit_row_min_age = 18
+source = "https://www.qatarairways.com/tradeportal/en/bookingnticketing/Seat-Request.html"
+checked = "2026-10-11"
+
+[[QR.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 32
+width_in = 17
+
+[[QR.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 32
+width_in = 18
+
+[[QR.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 32
+width_in = 17.5
+
+[[QR.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31
+width_in = 18
+
+[EK]
+name = "Emirates"
+site = "https://www.emirates.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Paid Extra Legroom seats at exit rows (all Economy fares)"
+extra_legroom_eur = [26, 224]
+exit_row_min_age = 16
+source = "https://www.emirates.com/english/book/about-booking-online/emirates-seat-selection/"
+checked = "2026-10-11"
+
+[[EK.layouts]]
+match = "A380"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 40
+width_in = 19.5
+
+[[EK.layouts]]
+match = "A380"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 32
+width_in = 18
+
+[[EK.layouts]]
+match = "777"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 40
+width_in = 19.5
+
+[[EK.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 32
+width_in = 17
+
+[FZ]
+name = "flydubai"
+site = "https://www.flydubai.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Paid extra legroom seats (exit rows 15-16, front rows)"
+exit_row_min_age = 16
+source = "https://www.flydubai.com/en/flying-with-us/onboard-experience/extra-legroom-seat"
+checked = "2026-10-11"
+
+[[FZ.layouts]]
+match = "737"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 30
+width_in = 17
+
+[EY]
+name = "Etihad Airways"
+site = "https://www.etihad.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Economy Space: paid extra-legroom rows incl. exit rows"
+source = "https://www.etihad.com/en/fly-etihad/our-cabins/economy-class/choose-your-seat"
+checked = "2026-10-11"
+
+[[EY.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17.2
+
+[PC]
+name = "Pegasus Airlines"
+site = "https://www.flypgs.com"
+meals_shorthaul = "paid"
+paid_meal_eur = 9.5
+extra_legroom = "Paid Extra Legroom seats (exit rows / front), from USD 15 on international flights"
+source = "https://www.flypgs.com/en/travel-services/flight-services/seat-selection"
+checked = "2026-10-11"
+
+[[PC.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28
+width_in = 17.5
+
+[[PC.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 17.5
+
+[A3]
+name = "Aegean Airlines"
+site = "https://en.aegeanair.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Paid Extra Legroom seats (emergency exit rows)"
+extra_legroom_eur = [9, 35]
+source = "https://en.aegeanair.com/travel-information/seat_types/"
+checked = "2026-10-11"
+
+[[A3.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28
+width_in = 17.5
+
+[[A3.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28
+width_in = 17.5
+
+
+[LH]
+name = "Lufthansa"
+site = "https://www.lufthansa.com"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+extra_legroom = "Extra Legroom Seat (exit rows; Allegris extra-legroom rows ~86 cm pitch)"
+extra_legroom_eur = [90, 115]
+exit_row_min_age = 16
+source = "https://newsroom.lufthansagroup.com/en/lufthansa-allegris-seats-can-now-be-booked-for-flights-from-march-30-2025/"
+checked = "2026-10-11"
+
+[[LH.layouts]]
+match = "747-8"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 31
+width_in = 17
+
+[[LH.layouts]]
+match = "747-8"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 38
+width_in = 18.5
+
+[[LH.layouts]]
+match = "747"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 31.5
+width_in = 17
+
+[[LH.layouts]]
+match = "747"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 38
+width_in = 18.5
+
+[[LH.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 18
+
+[[LH.layouts]]
+match = "A350"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+
+[[LH.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17
+
+[[LH.layouts]]
+match = "787"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 19
+
+[[LH.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 30
+width_in = 18
+
+[[LH.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+width_in = 18
+
+[[LH.layouts]]
+match = "A319"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 30
+width_in = 18
+
+[[LH.layouts]]
+match = "CRJ"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 31
+width_in = 17
+
+[[LH.layouts]]
+match = "Embraer 1"
+cabin = "economy"
+layout = "2-2"
+width_in = 18
+
+[VL]
+name = "Lufthansa City Airlines"
+site = "https://www.lufthansa.com"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+source = "https://seatmaps.com/airlines/vl-lufthansa-city/"
+checked = "2026-10-11"
+
+[[VL.layouts]]
+match = "A220"
+cabin = "economy"
+layout = "2-3"
+pitch_in = 28.5
+width_in = 18
+
+[[VL.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28.5
+width_in = 18
+
+[[VL.layouts]]
+match = "A319"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 18
+
+[OS]
+name = "Austrian Airlines"
+site = "https://www.austrian.com"
+meals_longhaul = "included"
+meals_shorthaul = "paid"
+paid_meal_eur = 9
+extra_legroom = "Legroom Seat (up to +7 cm, not in exit rows) plus exit-row seats"
+extra_legroom_eur = [84, 115]
+exit_row_min_age = 16
+source = "https://www.austrian.com/bg/en/book/additional-services/seat-reservation"
+checked = "2026-10-11"
+
+[[OS.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17
+
+[[OS.layouts]]
+match = "787"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 19
+
+[[OS.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28.5
+width_in = 18
+
+[[OS.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 18
+
+[[OS.layouts]]
+match = "Embraer 1"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 29
+width_in = 18
+
+[LX]
+name = "SWISS"
+site = "https://www.swiss.com"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+extra_legroom = "Economy Legroom Seat (+7.5 cm, 777 and A340) plus exit-row seats"
+exit_row_min_age = 16
+source = "https://www.swiss.com/us/en/book-and-manage/conditions/asr-conditions"
+checked = "2026-10-11"
+
+[[LX.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 31
+width_in = 17
+
+[[LX.layouts]]
+match = "777"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 39
+width_in = 18.1
+
+[[LX.layouts]]
+match = "A220"
+cabin = "economy"
+layout = "2-3"
+pitch_in = 29
+width_in = 18
+
+[[LX.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 18
+
+[SN]
+name = "Brussels Airlines"
+site = "https://www.brusselsairlines.com"
+meals_longhaul = "included"
+meals_shorthaul = "paid"
+paid_meal_eur = 7
+source = "https://www.brusselsairlines.com/lhg/be/en/o-d/cy-cy/brussels-belfast"
+checked = "2026-10-11"
+
+[[SN.layouts]]
+match = "A330"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 31
+width_in = 17.5
+
+[[SN.layouts]]
+match = "A330"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 19
+
+[[SN.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28.5
+width_in = 18
+
+[[SN.layouts]]
+match = "A319"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 30
+width_in = 18
+
+[EN]
+name = "Air Dolomiti"
+site = "https://www.airdolomiti.it"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+source = "https://seatmaps.com/airlines/en-air-dolomiti/embraer-e195/"
+checked = "2026-10-11"
+
+[[EN.layouts]]
+match = "Embraer 195"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 29
+width_in = 18
+
+[[EN.layouts]]
+match = "Embraer 190"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 31
+width_in = 18
+
+["4Y"]
+name = "Discover Airlines"
+site = "https://www.discover-airlines.com"
+meals_longhaul = "included"
+meals_shorthaul = "paid"
+source = "https://www.discover-airlines.com/us/en/discover/travel-classes/economy-class"
+checked = "2026-10-11"
+
+[["4Y".layouts]]
+match = "A330-300"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 31
+width_in = 17.5
+
+[["4Y".layouts]]
+match = "A330-300"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 19
+
+[["4Y".layouts]]
+match = "A330"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 30.5
+width_in = 18
+
+[["4Y".layouts]]
+match = "A330"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 19
+
+[["4Y".layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28.5
+width_in = 18
+
+[NH]
+name = "ANA All Nippon Airways"
+site = "https://www.ana.co.jp"
+meals_longhaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Paid advance seat reservation: exit-row seats with extra legroom"
+extra_legroom_eur = [30, 50]
+exit_row_min_age = 15
+source = "https://www.ana.co.jp/en/au/travel-information/safety-information/"
+checked = "2026-10-11"
+
+[[NH.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 34
+
+[[NH.layouts]]
+match = "777"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 38
+width_in = 19.5
+
+[[NH.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 34
+width_in = 17
+
+[[NH.layouts]]
+match = "787"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 19
+
+
+[JL]
+name = "Japan Airlines"
+site = "https://www.jal.co.jp"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+exit_row_min_age = 15
+source = "https://jal.co.jp/en/inter/reservation/seat_selection"
+checked = "2026-10-11"
+
+[[JL.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 33
+width_in = 18
+
+[[JL.layouts]]
+match = "A350"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 42
+width_in = 19
+
+[[JL.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 34
+width_in = 18.5
+
+[[JL.layouts]]
+match = "777"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 42
+width_in = 18.9
+
+[[JL.layouts]]
+match = "787"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 33
+
+[[JL.layouts]]
+match = "787"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 42
+
+[AY]
+name = "Finnair"
+site = "https://www.finnair.com"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+extra_legroom = "Extra Legroom seats (exit rows, 130 cm+ in front)"
+exit_row_min_age = 12
+source = "https://www.finnair.com/en/flight-information/finnair-fleet"
+checked = "2026-10-11"
+
+[[AY.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 18
+
+[[AY.layouts]]
+match = "A350"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 38
+width_in = 18
+
+[[AY.layouts]]
+match = "A330"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 30
+width_in = 18
+
+[[AY.layouts]]
+match = "A330"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 18
+
+[[AY.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 18
+
+[[AY.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 18
+
+[[AY.layouts]]
+match = "A319"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 18
+
+[[AY.layouts]]
+match = "Embraer 1"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 31
+width_in = 18
+
+[AF]
+name = "Air France"
+site = "https://www.airfrance.com"
+meals_longhaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Seat Plus (extra-legroom economy seats, exit rows and select rows)"
+source = "https://corporate.airfrance.com/en/news/air-frances-new-long-haul-cabins-take-skies-first-time"
+checked = "2026-10-11"
+
+[[AF.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 31
+width_in = 17
+
+[[AF.layouts]]
+match = "777"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 38
+width_in = 19
+
+[[AF.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 18
+
+[[AF.layouts]]
+match = "A220"
+cabin = "economy"
+layout = "2-3"
+pitch_in = 30
+width_in = 18.9
+
+[[AF.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 18
+
+[KL]
+name = "KLM Royal Dutch Airlines"
+site = "https://www.klm.com"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+extra_legroom = "Economy Comfort (extra legroom, more recline, front of cabin)"
+extra_legroom_eur = [60, 180]
+source = "https://www.klm.nl/en/information/travel-class-extra-options/economy-class-seats"
+checked = "2026-10-11"
+
+[[KL.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17
+
+[[KL.layouts]]
+match = "787"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 18.5
+
+[[KL.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 31
+width_in = 17
+
+[[KL.layouts]]
+match = "777"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 38
+width_in = 18.5
+
+[[KL.layouts]]
+match = "737"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 17
+
+[[KL.layouts]]
+match = "Embraer 1"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 29
+width_in = 18
+
+[BA]
+name = "British Airways"
+site = "https://www.britishairways.com"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+extra_legroom = "Paid exit-row seats"
+extra_legroom_eur = [60, 100]
+exit_row_min_age = 12
+source = "https://www.britishairways.com"
+checked = "2026-10-11"
+
+[[BA.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17.6
+
+[[BA.layouts]]
+match = "A350"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 38
+width_in = 18.6
+
+[[BA.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17.5
+
+[[BA.layouts]]
+match = "787"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+
+[[BA.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 17
+
+[[BA.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+
+[AZ]
+name = "ITA Airways"
+site = "https://www.ita-airways.com"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+extra_legroom = "Legroom seat (rows 30-34 on A350/A330neo, with priority boarding)"
+exit_row_min_age = 16
+source = "https://www.ita-airways.com/gb/en/legal/seat-reservation-terms-and-conditions"
+checked = "2026-10-11"
+
+[[AZ.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 18
+
+[[AZ.layouts]]
+match = "A350"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 40
+width_in = 19
+
+[[AZ.layouts]]
+match = "A330"
+cabin = "economy"
+layout = "2-4-2"
+
+[[AZ.layouts]]
+match = "A330"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 40
+
+[[AZ.layouts]]
+match = "A220"
+cabin = "economy"
+layout = "2-3"
+pitch_in = 30
+width_in = 18.5
+
+[[AZ.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 18
+
+[CA]
+name = "Air China"
+site = "https://www.airchina.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+source = "https://seatmaps.com/airlines/ca-air-china/"
+checked = "2026-10-11"
+
+[[CA.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 18
+
+[[CA.layouts]]
+match = "A350"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 39
+width_in = 20
+
+[[CA.layouts]]
+match = "A330"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 31
+width_in = 18
+
+[[CA.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17
+
+[[CA.layouts]]
+match = "737"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31
+width_in = 17
+
+[MU]
+name = "China Eastern Airlines"
+site = "https://www.ceair.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+source = "https://seatmaps.com/airlines/mu-china-eastern/"
+checked = "2026-10-11"
+
+[[MU.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 18
+
+[[MU.layouts]]
+match = "A350"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 37
+width_in = 18.5
+
+[[MU.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 31
+width_in = 17.3
+
+[[MU.layouts]]
+match = "787"
+cabin = "premium-economy"
+layout = "2-3-2"
+pitch_in = 38
+width_in = 19
+
+[[MU.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-4-3"
+pitch_in = 32
+width_in = 17
+
+[[MU.layouts]]
+match = "A330"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 31
+width_in = 17.5
+
+[[MU.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31
+width_in = 17.8
+
+
+[KE]
+name = "Korean Air"
+site = "https://www.koreanair.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Extra Legroom seats (exit rows / front row of each economy section), paid on international flights"
+extra_legroom_eur = [95, 130]
+exit_row_min_age = 15
+source = "https://www.koreanair.com/contents/booking/additional-service/seat-selection/preferred-seat/economy?hl=en"
+checked = "2026-10-11"
+
+[[KE.layouts]]
+match = "787"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 33
+width_in = 17.2
+
+[[KE.layouts]]
+match = "777"
+cabin = "premium-economy"
+layout = "2-4-2"
+pitch_in = 40
+width_in = 19.5
+
+[[KE.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 33
+width_in = 18.1
+
+[[KE.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 32
+width_in = 18
+
+[[KE.layouts]]
+match = "A330"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 32
+width_in = 18
+
+[[KE.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31.5
+width_in = 17.8
+
+[[KE.layouts]]
+match = "A220"
+cabin = "economy"
+layout = "2-3"
+pitch_in = 30.5
+width_in = 18.5
+
+[[KE.layouts]]
+match = "737"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31.5
+width_in = 17.8
+
+[OZ]
+name = "Asiana Airlines"
+site = "https://flyasiana.com"
+meals_longhaul = "included"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Extra Legroom seats (front row of each economy section and exit rows)"
+extra_legroom_eur = [95, 130]
+exit_row_min_age = 15
+source = "https://flyasiana.com/C/GB/EN/contents/advanced-reservation-for-preferred-seating"
+checked = "2026-10-11"
+
+[[OZ.layouts]]
+match = "A350"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 32
+width_in = 18
+
+[[OZ.layouts]]
+match = "777"
+cabin = "economy"
+layout = "3-3-3"
+pitch_in = 33
+width_in = 18.1
+
+[[OZ.layouts]]
+match = "A330"
+cabin = "economy"
+layout = "2-4-2"
+pitch_in = 32
+width_in = 17.7
+
+[[OZ.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31
+width_in = 18.3
+
+[FB]
+name = "Bulgaria Air"
+site = "https://www.air.bg"
+meals_shorthaul = "included"
+paid_meal_eur = 0
+extra_legroom = "Extra legroom seats at emergency exit rows"
+extra_legroom_eur = [25, 30]
+source = "https://air.bg/en/services/travel-more-comfortable"
+checked = "2026-10-11"
+
+[[FB.layouts]]
+match = "A220"
+cabin = "economy"
+layout = "2-3"
+pitch_in = 30
+width_in = 18.5
+
+[[FB.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29.5
+width_in = 17.5
+
+[[FB.layouts]]
+match = "Embraer 1"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 31
+width_in = 18
+
+[W6]
+name = "Wizz Air"
+site = "https://wizzair.com"
+meals_shorthaul = "paid"
+paid_meal_eur = 7
+extra_legroom = "Extra Legroom seats (exit rows)"
+exit_row_min_age = 16
+source = "https://wizzair.com/en-gb/help-centre/booking-information-and-services/seats/seat-types-and-additional-services"
+checked = "2026-10-11"
+
+[[W6.layouts]]
+match = "A321"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28.5
+width_in = 18
+
+[[W6.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28.5
+width_in = 18
+
+[FR]
+name = "Ryanair"
+site = "https://www.ryanair.com"
+meals_shorthaul = "paid"
+paid_meal_eur = 6.5
+extra_legroom = "Extra legroom seats (exit rows)"
+extra_legroom_eur = [12.5, 27.5]
+exit_row_min_age = 16
+source = "https://www.ryanair.com/content/ryanair/gb/en/useful-info/help-centre/fees.tab-content.html"
+checked = "2026-10-11"
+
+[[FR.layouts]]
+match = "737"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 29
+width_in = 17
+
+[KM]
+name = "KM Malta Airlines"
+site = "https://kmmaltairlines.com"
+meals_shorthaul = "paid"
+paid_meal_eur = 7
+extra_legroom = "Exit-row seats (paid; not free even on Economy Flex)"
+exit_row_min_age = 12
+source = "https://kmmaltairlines.com/en/seat-information"
+checked = "2026-10-11"
+
+[[KM.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 28.5
+width_in = 18
+
+[JU]
+name = "Air Serbia"
+site = "https://www.airserbia.com"
+meals_longhaul = "included"
+meals_shorthaul = "snack"
+paid_meal_eur = 0
+extra_legroom = "Extra legroom seats (exit rows)"
+extra_legroom_eur = [8, 80]
+exit_row_min_age = 18
+source = "https://www.airserbia.com/en/explore/services/seat-reservation"
+checked = "2026-10-11"
+
+[[JU.layouts]]
+match = "A319"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31
+width_in = 17.5
+
+[[JU.layouts]]
+match = "A320"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 31
+width_in = 17.5
+
+[[JU.layouts]]
+match = "Embraer 1"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 30.5
+width_in = 18
+
+[[JU.layouts]]
+match = "ATR"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 30
+width_in = 18
+
+[RO]
+name = "TAROM"
+site = "https://www.tarom.ro"
+meals_shorthaul = "paid"
+extra_legroom = "Preferred seats (extra legroom / emergency exit rows)"
+exit_row_min_age = 18
+source = "https://www.tarom.ro/en/conditions-additional-services/"
+checked = "2026-10-11"
+
+[[RO.layouts]]
+match = "737"
+cabin = "economy"
+layout = "3-3"
+pitch_in = 30
+width_in = 17
+
+[[RO.layouts]]
+match = "ATR"
+cabin = "economy"
+layout = "2-2"
+pitch_in = 29
+width_in = 18
