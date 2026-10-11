@@ -1,6 +1,6 @@
 # Sofia ↔ Tokyo flight watch — design
 
-Date: 2026-10-11 · Status: draft for review
+Date: 2026-10-11 · Status: approved by Kamen 2026-10-11
 
 ## Goal
 
@@ -68,9 +68,17 @@ bag and meals):
   that nothing is under budget, and attaches the full HTML report. The report can
   be sorted and filtered.
 
-**Cost**
-- Use free sources and check as many combinations as possible.
-- Any paid service needs Kamen's explicit OK before it is switched on.
+**Cost: a hard rule**
+- Running the tool must never cost money or Claude usage. Only building it may use
+  Claude.
+- The daily run is plain Python. It makes no LLM or Claude calls and uses no paid
+  APIs.
+- **GitHub Actions:**
+  - the job has `timeout-minutes: 45`, so a month of runs stays under 1,400 of the
+    2,000 free private-repo minutes;
+  - the account has no payment method, so GitHub cannot bill it;
+  - at the end of each run, the report states the minutes used this month.
+- Email goes through Gmail SMTP, which is free.
 
 ## Assumptions (not stated, chosen by Claude; correct if wrong)
 
@@ -135,9 +143,16 @@ the real one.
 |---|---|---|---|
 | Google Flights, through the `fast-flights` library plus Google's calendar/date-grid endpoints | Price calendars, full itinerary lists, self-transfer legs, "book with airline" options | Free | Unofficial and against Google's terms of service, so it can break when Google changes the site. Volume is kept polite and spread over the run. No CAPTCHA or bot-check evasion. If the library breaks, the run says so in the email and does not report "no deals". |
 | Ryanair / Wizz Air public fare calendars | Feeder legs SOF ↔ European hubs | Free | Unofficial endpoints |
-| Duffel (live mode) | Detail check on the top candidates: seat maps, extra-legroom seat prices, bags, meals, bookable fare confirmation | Free up to 1,500 searches per booking made, then $0.005 per search. With no bookings, expect a few dollars a month | Enabled only after Kamen OKs the cost |
+| Google Flights per-flight details | Legroom shown on each flight ("average / above-average legroom", pitch in inches), aircraft type, and Google's own bag and price notes | Free | Same as above |
+| Static airline tables (`data/airlines.toml`) | Per airline, aircraft and cabin: seat pitch and width, seat layout (e.g. 3-3-3), extra-legroom seat products and their typical price, meals included per leg length, checked-bag allowance and fee per fare family | Free | Can drift. Each entry carries its source URL and date, and the report shows them |
 | Static legroom table (seat pitch and width per airline, aircraft type and cabin, from public airline specs) | Legroom when no seat map is available | Free | Can drift; dated in the report |
 | Bulgarian Ministry of Education 2026/27 school-year order, and the Bulgarian public holidays | School-day scoring | Free | Dates must come from the official order (mon.bg), not guesses |
+
+Duffel is dropped. With no bookings, every search would be charged, so it breaks
+the cost rule. That means no live seat maps:
+- seating is planned from the cabin layout;
+- the plan is marked "choose these seats when booking on the airline's site";
+- the report says that seat availability has not been verified live.
 
 Skyscanner, Kiwi and Amadeus are left out. Skyscanner's API is for partners only and
 its site blocks bots. Kiwi's API takes new users by invitation only. Amadeus's free
@@ -164,8 +179,8 @@ tested in isolation.
     check against the second flight's check-in close time.
 - **Price:**
   - fare,
-  - + a 23 kg bag per person where the fare does not include one (fee from Duffel,
-    or the airline fee table),
+  - + a 23 kg bag per person where the fare does not include one (fee from the airline
+    table),
   - + paid meals,
   - all per person, then multiplied by the party size.
   - Compared with the budget for the cabin. For mixed-cabin trips, the premium
@@ -176,14 +191,14 @@ tested in isolation.
   - each separate ticket must be a single-airline itinerary sold on that airline's
     site.
 - **Seats:** enough seats for the party in the chosen cabin. Seat counts come from
-  Duffel, or a search made with 4 adults.
+  searching with 4 adults (Party A) and with 3 adults (Party B).
 
 ## Seating rules
 
 - **Party A (4 people):** prefer 4 together. Otherwise 2 + 2 (pairs in the same row
   or rows next to each other). 3 + 1 is acceptable.
 - **Party B (3 people):** prefer 3 together. 2 + 1 only on narrow-bodies.
-- From the seat map, find the best layout under 2 cost options:
+- From the cabin layout, find the best layout under 2 cost options:
   - standard seats only;
   - the maximum legroom available: exit rows, bulkheads, extra-legroom products.
     Note restrictions, e.g. a 14-year-old is allowed in an exit row on most airlines
@@ -218,8 +233,8 @@ flightwatch/
   sources/
     google.py          # calendars, date grid, full search (fast-flights)
     lowcost.py         # Ryanair/Wizz feeder fare calendars
-    duffel.py          # detail check: seat maps, bags, meals
-    legroom.py         # static seat-pitch table lookup
+    airlines.py        # static airline tables: pitch, layout, meals, bags
+  data/airlines.toml
   prune.py             # lower-bound pruning
   combine.py           # outbound×return and self-transfer combination
   rules.py             # duration, stay, connection, price, bookability
@@ -233,8 +248,9 @@ launchd/                       # optional Mac backup runner
 tests/                         # rules, combine, seating, calendar (recorded fixtures)
 ```
 
-**Data flow:** config → calendars (prune) → full searches → combine → rules → Duffel
-detail on the top N → seating → history → report → email.
+**Data flow:** config → calendars (prune) → full searches → combine → rules →
+airline-table enrichment (bags, meals, legroom) → seating → history → report →
+email.
 
 ## Error handling
 
@@ -256,8 +272,6 @@ detail on the top N → seating → history → report → email.
 ## Setup Kamen does (credentials can't be entered by Claude)
 
 - Create a Gmail app password and add it as a GitHub Actions secret.
-- Create a Duffel account and add its key as a secret, only if the Duffel cost is
-  approved.
 - Approve the creation of the private GitHub repo.
 
 ## Out of scope
