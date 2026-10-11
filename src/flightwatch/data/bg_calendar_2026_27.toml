@@ -1,0 +1,25 @@
+# Bulgarian school calendar 2026/27 for a grade 7-8 student in a state school,
+# merged with official public holidays (Labour Code art. 154) for 2026-10-01..2027-07-31.
+# School dates: MON order No. РД09-3345/31.08.2026 (signed by Minister Georgi Valchev).
+# mon.bg itself returned 403 to automated fetch; the signed PDF of the order is mirrored at `source`.
+source = "https://prepodavame.bg/wp-content/uploads/2026/08/4-zapoved_grafik-na-uchebno-vreme-2026-2027-31082026.pdf"
+holidays_source = "https://lex.bg/laws/ldoc/1594373121"
+retrieved = "2026-10-11"
+# End of 2nd term for grades VII-XI (grade 7 and grade 8 share the date): Fri 2027-07-02.
+# Grade 7 additionally sits the national external assessment (НВО) on 2027-06-18 and 2027-06-21.
+school_year_end = "2027-07-02"
+off = [
+  ["2026-10-31", "2026-11-02"],   # autumn holiday (есенна ваканция), includes Sun 1 Nov Day of the National Awakeners
+  ["2026-12-01", "2026-12-31"],   # Kamen: all of December counts as off
+  ["2026-12-24", "2027-01-03"],   # Christmas holiday (коледна ваканция); public holidays 24-26 Dec + Mon 28 Dec (26 Dec falls on Sat); 1 Jan 2027 Fri
+  ["2027-01-30", "2027-02-02"],   # mid-year holiday (междусрочна ваканция); 2nd term starts Wed 3 Feb
+  ["2027-03-03", "2027-03-03"],   # Liberation Day, public holiday (Wed)
+  ["2027-04-03", "2027-04-11"],   # spring holiday for grades I-XI (пролетна ваканция)
+  ["2027-04-30", "2027-05-09"],   # Easter block: Good Fri 30 Apr, Holy Sat + Labour Day 1 May, Easter Sun 2 May, Easter Mon 3 May (public); Tue 4 May public day off (1 May on Sat moves to next workday); Wed 5 May non-school day per MON order; Thu 6 May St George's Day / Army Day (public); Fri 7 May non-school day per MON order
+  ["2027-05-19", "2027-05-19"],   # non-school day in MON order: matriculation exam (ДЗИ) in Bulgarian (order does not restrict it to grade 12)
+  ["2027-05-21", "2027-05-21"],   # non-school day in MON order: second matriculation exam / vocational state exam
+  ["2027-05-24", "2027-05-25"],   # 24 May Day of Slavonic Script (public holiday, Mon) + 25 May non-school day per MON order
+  ["2027-06-18", "2027-06-18"],   # non-school day for grade 8 (НВО Bulgarian exam for grades 7 and 10); grade 7 sits the exam that day
+  ["2027-06-21", "2027-06-21"],   # non-school day for grade 8 (НВО maths exam for grades 7 and 10); grade 7 sits the exam that day
+  ["2027-07-03", "2027-07-31"],   # summer holiday after end of 2nd term (grades VII-XI end Fri 2 Jul 2027)
+]
