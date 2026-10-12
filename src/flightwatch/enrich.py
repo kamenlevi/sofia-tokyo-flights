@@ -31,6 +31,16 @@ class Result:
     recommended: bool
     extra_legroom: tuple[str, ...]
     booking: tuple[tuple[str, str], ...]
+    days: object = None               # DayBreakdown from leaving Sofia to getting home
+
+    @property
+    def japan_nights(self) -> int:
+        return self.trip.stay_days
+
+    @property
+    def japan_full_days(self) -> int:
+        """Days in Japan not counting the day you land and the day you leave."""
+        return max(self.trip.stay_days - 1, 0)
 
 
 def _view(s: Segment, cabin: str, party: int, airlines: AirlineTable) -> tuple[SegmentView, float]:
@@ -78,4 +88,5 @@ def enrich(trip: Trip, cfg, airlines: AirlineTable, cal) -> Result:
     home = trip.inbound.arr.date()
     return Result(trip, tuple(views["out"]), tuple(views["in"]), addon, trip.per_person_eur + addon, problems,
                   cal.school_days_missed(trip.outbound.dep.date(), home),
-                  trip.stay_days >= cfg.stay_recommended, tuple(extra), tuple(booking))
+                  trip.stay_days >= cfg.stay_recommended, tuple(extra), tuple(booking),
+                  cal.breakdown(trip.outbound.dep.date(), home))

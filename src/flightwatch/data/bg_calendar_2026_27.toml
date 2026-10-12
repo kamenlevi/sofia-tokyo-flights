@@ -25,3 +25,22 @@ off = [
   ["2027-06-21", "2027-06-21"],   # non-school day for grade 8 (НВО maths exam for grades 7 and 10); grade 7 sits the exam that day
   ["2027-07-03", "2027-07-31"],   # summer holiday after end of 2nd term (grades VII-XI end Fri 2 Jul 2027)
 ]
+
+# Official holidays as listed on https://почивнидни.com (xn--b1aekbb1acci5f.com), pages for 2026 and 2027
+holidays_list_source = "https://xn--b1aekbb1acci5f.com/pochivnidni2027.html"
+holidays = [
+  ["2026-12-24", "Christmas Eve"],
+  ["2026-12-25", "Christmas"],
+  ["2026-12-26", "Christmas (2nd day)"],
+  ["2027-01-01", "New Year"],
+  ["2027-03-03", "Liberation Day"],
+  ["2027-05-01", "Labour Day"],
+  ["2027-05-02", "Easter"],
+  ["2027-05-06", "St George's Day"],
+  ["2027-05-24", "Day of Slavonic Script and Culture"],
+  ["2027-09-06", "Unification Day"],
+  ["2027-09-22", "Independence Day"],
+  ["2027-12-24", "Christmas Eve"],
+  ["2027-12-25", "Christmas"],
+  ["2027-12-26", "Christmas (2nd day)"],
+]

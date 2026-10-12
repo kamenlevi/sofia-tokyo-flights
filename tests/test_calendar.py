@@ -31,3 +31,15 @@ def test_school_days_missed_counts_inclusive_weekdays_not_off():
 def test_next_school_year_counts_school_days_again():
     assert not CAL.is_off(date(2027, 9, 20))       # a Monday in the 2027/28 school year
     assert CAL.is_off(date(2027, 8, 16))           # summer holiday
+
+
+def test_breakdown_of_a_christmas_trip():
+    b = CAL.breakdown(date(2026, 12, 13), date(2027, 1, 1))
+    assert (b.total, b.weekdays, b.weekend, b.school_days) == (20, 15, 5, 0)   # Sun 13 Dec to Fri 1 Jan
+    names = [name for _, name in b.holidays]
+    assert "Christmas" in " ".join(names) and "New Year" in " ".join(names)
+
+
+def test_holidays_listed_from_pochivnidni():
+    assert any(d == date(2027, 3, 3) for d, _ in CAL.holidays)
+    assert any(d == date(2027, 5, 2) for d, _ in CAL.holidays)        # Easter 2027

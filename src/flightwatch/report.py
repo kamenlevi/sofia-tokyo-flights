@@ -55,6 +55,21 @@ def _leg_html(views, leg) -> str:
     return "".join(parts)
 
 
+def japan_text(r: Result) -> str:
+    t = r.trip
+    return (f"{r.japan_nights} nights, {r.japan_full_days} full days in Japan "
+            f"(land {t.outbound.arr:%a %d %b %H:%M}, leave {t.inbound.dep:%a %d %b %H:%M})")
+
+
+def days_text(r: Result) -> str:
+    b = r.days
+    if b is None:
+        return ""
+    hol = ", ".join(f"{n} {d:%d %b}" for d, n in b.holidays) or "none"
+    return (f"{b.total} days away: {b.weekdays} weekdays, {b.weekend} weekend days, "
+            f"{b.school_days} school days; holidays: {hol}")
+
+
 def _row(r: Result, hist: dict) -> str:
     t = r.trip
     ok = not r.problems
@@ -69,7 +84,8 @@ def _row(r: Result, hist: dict) -> str:
 <td data-v="{r.price_pp:.0f}"><b>{_eur(r.price_pp)}</b> pp<br>{_eur(r.price_pp * t.party)} total for {t.party}<br>
 <small>23 kg bag included{', meals add ' + _eur(r.meal_addon_pp) + ' pp' if r.meal_addon_pp else ''}</small><br><small>{escape(trend(hist, t.key))}</small></td>
 <td data-v="{t.outbound.dep:%Y%m%d}">{t.cabin.replace('-', ' ')}<br>{t.outbound.dep:%a %d %b} → {t.inbound.arr:%a %d %b %Y}<br>
-<b>{t.stay_days} days</b> in Japan{' (recommended)' if r.recommended else ''}</td>
+<b>{t.stay_days} days</b> in Japan{' (recommended)' if r.recommended else ''}<br>
+<small>{escape(japan_text(r))}</small><br><small>{escape(days_text(r))}</small></td>
 <td data-v="{r.school_days}">{r.school_days}</td>
 <td>{_leg_html(r.outbound, t.outbound)}<div class=arr>Arrive Tokyo {t.outbound.arr:%a %d %b %H:%M}</div></td>
 <td>{_leg_html(r.inbound, t.inbound)}<div class=arr>Arrive Sofia {t.inbound.arr:%a %d %b %H:%M}</div></td>
@@ -186,7 +202,7 @@ def render_issue(results: list[Result], cov, today: date, hist: dict, mention: s
     else:
         lines += ["", f"{'Best' if deals else 'Closest'} {len(top)} of {len(deals) if deals else len(ranked):,} "
                       f"{'trips under budget' if deals else 'trips (none under budget)'}, fewest school days first:", "",
-                  "| € pp | total | cabin | people | dates | days | school days | flights | trend | book |",
+                      "| € pp | total | cabin | people | dates | in Japan | days away (school days, holidays) | flights | trend | book |",
                   "|---|---|---|---|---|---|---|---|---|---|"]
     for r in top:
         t = r.trip
@@ -194,7 +210,7 @@ def render_issue(results: list[Result], cov, today: date, hist: dict, mention: s
                    + " / " + " + ".join(f"{s.code} {s.origin}→{s.destination} {s.dep:%d %b %H:%M}" for s in t.inbound.segments))
         books = " ".join(f"[{i + 1}]({u})" for i, (_, u) in enumerate(r.booking))
         lines.append(f"| {_eur(r.price_pp)} | {_eur(r.price_pp * t.party)} | {t.cabin.replace('-', ' ')} | {t.party} | "
-                     f"{t.outbound.dep:%a %d %b} → {t.inbound.arr:%a %d %b %Y} | {t.stay_days} | {r.school_days} | "
+                     f"{t.outbound.dep:%a %d %b} → {t.inbound.arr:%a %d %b %Y} | {_md(japan_text(r))} | {_md(days_text(r))} | "
                      f"{_md(flights)}{' (separate tickets)' if t.self_transfer else ''} | {_md(trend(hist, t.key))} | {books} |")
     lines += ["", "Prices are Google Flights' cheapest seller with a 23 kg bag; the airline's own price can be a little higher. "
               "The full report with legroom, seat plans and meals is attached to each run's summary in the Actions tab "

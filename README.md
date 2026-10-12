@@ -28,6 +28,8 @@ Each result says how many school days it misses. The count uses the official Bul
   - Click a column header to sort.
   - Use the filters for cabin, number of people, 14+ day stays, one-ticket trips, Friday/Saturday departures, and a maximum number of school days.
 - **Each row shows:**
+  - days in Japan: nights, full days (not counting the landing and leaving days), and the landing and leaving times;
+  - the whole trip from leaving Sofia to getting home: total days, weekdays, weekend days, school days, and the official holidays inside it (holiday list from [почивнидни.com](https://xn--b1aekbb1acci5f.com/));
   - every flight: number, airline, aircraft, local times, and arrival times in Tokyo and in Sofia;
   - connection times and total time each way;
   - legroom: Google's figure, plus seat pitch and width from the airline's published specs;

@@ -78,3 +78,13 @@ def test_issue_for_incomplete_run_says_so():
     cov = Coverage(pairs_planned=10, pairs_done=4, failures=["HTTP 503"], shards_seen=1, shards_expected=1)
     title, body = render_issue([], cov, date(2026, 10, 12), {}, mention="kamenlevi")
     assert "INCOMPLETE" in title and "HTTP 503" in body
+
+
+def test_rows_show_japan_days_and_trip_day_breakdown():
+    from flightwatch.report import render_issue
+    r = result(4400)                                    # out Fri 5 Mar, land 6 Mar, leave Tokyo 20 Mar, home 21 Mar
+    title, body = render_issue([r], FULL, date(2026, 10, 12), {}, mention="kamenlevi")
+    html = render_html([r], FULL, date(2026, 10, 12), {}, CAL.source)
+    for text in (body, html):
+        assert "14 nights" in text and "13 full days" in text
+        assert "17 days away" in text and "11 weekdays" in text and "6 weekend days" in text
