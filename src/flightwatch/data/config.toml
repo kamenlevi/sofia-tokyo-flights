@@ -17,6 +17,7 @@ min_request_interval_s = 1.0
 max_requests_per_run = 44976   # 48 jobs x 937; the 40-job run on 2026-10-11 used 37,350 and reached 96%
 shards = 48
 hub_rotation_days = 7
+shard_deadline_minutes = 50   # each cloud job stops and saves before its 60-minute limit
 hubs = ["IST", "DOH", "DXB", "FRA", "MUC", "WAW", "HEL"]
 hubs_disabled = ["AUH", "VIE", "ZRH", "CDG", "AMS", "LHR", "FCO"]
 

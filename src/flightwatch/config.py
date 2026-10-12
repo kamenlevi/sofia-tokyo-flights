@@ -31,6 +31,7 @@ class Config:
     city_change_min: int
     city_pairs: tuple[frozenset[str], ...]
     notify_github_user: str = "kamenlevi"
+    shard_deadline_minutes: int = 50
 
 
 def load_config(path: Path | None = None) -> Config:

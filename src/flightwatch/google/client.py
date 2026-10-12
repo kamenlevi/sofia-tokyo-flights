@@ -15,20 +15,28 @@ class BudgetExceeded(Exception):
     """This process reached its request budget."""
 
 
-def primp_transport() -> Transport:
+def primp_transport(timeout_s: float = 30) -> Transport:
     from primp import Client
-    c = Client(impersonate="chrome_145", impersonate_os="macos", referer=True, cookie_store=True)
-    c.set_cookies("https://www.google.com", {"SOCS": "CAI"})   # consent: reject all
+
+    def new_client():
+        c = Client(impersonate="chrome_145", impersonate_os="macos", referer=True, cookie_store=True, timeout=timeout_s)
+        c.set_cookies("https://www.google.com", {"SOCS": "CAI"})   # consent: reject all
+        return c
+    state = {"c": new_client()}
 
     def get(params: dict[str, str]) -> tuple[int, str]:
-        r = c.get(URL, params=params)
+        try:
+            r = state["c"].get(URL, params=params)
+        except Exception:
+            state["c"] = new_client()     # a broken HTTP/2 connection otherwise poisons every later request
+            raise
         return r.status_code, r.text
     return get
 
 
 class GoogleClient:
     def __init__(self, transport: Transport | None = None, min_interval: float = 1.0, max_requests: int = 937,
-                 retries: int = 3, sleep=time.sleep, clock=time.monotonic):
+                 retries: int = 3, sleep=time.sleep, clock=time.monotonic, deadline_s: float | None = None):
         self.transport = transport or primp_transport()
         self.min_interval = min_interval
         self.max_requests = max_requests
@@ -40,6 +48,8 @@ class GoogleClient:
         self.empty = 0            # successful searches that listed no flights at all
         self.priceless = 0        # searches that listed flights but no price for any of them
         self._last: float | None = None
+        self.deadline_s = deadline_s
+        self._start = clock()
 
     def _throttle(self) -> None:
         if self._last is not None:
@@ -53,6 +63,8 @@ class GoogleClient:
         for attempt in range(self.retries):
             if self.requests >= self.max_requests:
                 raise BudgetExceeded(f"{self.requests} requests made")
+            if self.deadline_s is not None and self.clock() - self._start > self.deadline_s:
+                raise BudgetExceeded(f"time limit of {self.deadline_s / 60:.0f} min reached after {self.requests} requests")
             self._throttle()
             self.requests += 1
             try:

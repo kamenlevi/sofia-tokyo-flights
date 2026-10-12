@@ -39,7 +39,8 @@ def _search(args, day: date, index: int, total: int) -> ShardResult:
     if args.no_hubs:
         cfg = replace(cfg, hubs=())
     client = GoogleClient(transport=make_transport(), min_interval=args.interval,
-                          max_requests=cfg.max_requests_per_run // total)
+                          max_requests=cfg.max_requests_per_run // total,
+                          deadline_s=cfg.shard_deadline_minutes * 60 if total > 1 else None)
     return run_shard(client, cfg, day, index, total, args.limit_days)
 
 

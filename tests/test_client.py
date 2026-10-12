@@ -72,3 +72,11 @@ def test_counts_pages_with_flights_but_no_prices():
     g.search({})
     g.search({})
     assert g.priceless == 1 and g.empty == 0
+
+
+def test_stops_at_deadline_so_partial_results_are_kept():
+    g, t, c = client([OK, OK], min_interval=0, deadline_s=100)
+    g.search({})
+    c.t = 101
+    with pytest.raises(BudgetExceeded, match="time"):
+        g.search({})
