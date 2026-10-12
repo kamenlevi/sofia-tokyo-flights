@@ -181,10 +181,13 @@ def render_issue(results: list[Result], cov, today: date, hist: dict, mention: s
     top = (deals or ranked)[:ISSUE_ROWS]
     lines = [f"@{mention} daily Sofia ↔ Tokyo results.", "", _coverage_line(cov)]
     lines += [f"- {_md(f)}" for f in cov.failures[:10]]
-    lines += ["", f"{'Best' if deals else 'Closest'} {len(top)} of {len(deals) if deals else len(ranked):,} "
-                  f"{'trips under budget' if deals else 'trips (none under budget)'}, fewest school days first:", "",
-              "| € pp | total | cabin | people | dates | days | school days | flights | trend | book |",
-              "|---|---|---|---|---|---|---|---|---|---|"]
+    if not top:
+        lines += ["", "No trip came within 10% of the budget today."]
+    else:
+        lines += ["", f"{'Best' if deals else 'Closest'} {len(top)} of {len(deals) if deals else len(ranked):,} "
+                      f"{'trips under budget' if deals else 'trips (none under budget)'}, fewest school days first:", "",
+                  "| € pp | total | cabin | people | dates | days | school days | flights | trend | book |",
+                  "|---|---|---|---|---|---|---|---|---|---|"]
     for r in top:
         t = r.trip
         flights = (" + ".join(f"{s.code} {s.origin}→{s.destination} {s.dep:%d %b %H:%M}" for s in t.outbound.segments)

@@ -14,9 +14,10 @@ esac
 export FLIGHTWATCH_KEY="$(security find-generic-password -s flightwatch-key -w)"
 export PATH="$PATH:/opt/homebrew/bin"   # gh
 git pull --ff-only
-caffeinate -i flightwatch local --history history/history.bin --out report.html --no-email --issue /tmp/flightwatch-issue
+ISSUE="$(mktemp -d)/issue"
+caffeinate -i flightwatch local --history history/history.bin --out report.html --no-email --issue "$ISSUE"
 for n in $(gh issue list --repo kamenlevi/sofia-tokyo-flights --label daily --state open --json number -q '.[].number'); do
   gh issue close "$n" --repo kamenlevi/sofia-tokyo-flights; done
 gh issue create --repo kamenlevi/sofia-tokyo-flights --label daily \
-  --title "$(cat /tmp/flightwatch-issue.title) (from the Mac)" --body-file /tmp/flightwatch-issue.md
+  --title "$(cat "$ISSUE.title") (from the Mac)" --body-file "$ISSUE.md"
 git add history/history.bin && git commit -m "History $(date +%F) (Mac fallback)" && git push
