@@ -9,7 +9,9 @@ The rules:
 - **Flights:** at most one stop and at most 20 hours each way.
 - **Dates:** departures from 2 weeks to 9 months ahead.
 
-Each result says how many school days it misses. The count uses the official Bulgarian 2026/27 school calendar and treats all of December as off.
+Each result says how many school days it misses. The count uses the official Bulgarian 2026/27 school calendar.
+
+Trips leaving in December 2026 are marked **December pick** and listed first, because Mum is between jobs then. Their weekdays still count as missed school days. To change the month, edit `recommended_months` in `src/flightwatch/data/config.toml`.
 
 ## Costs nothing to run
 

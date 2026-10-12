@@ -21,7 +21,10 @@ shard_deadline_minutes = 50   # each cloud job stops and saves before its 60-min
 hubs = ["IST", "DOH", "DXB", "FRA", "MUC", "WAW", "HEL"]
 hubs_disabled = ["AUH", "VIE", "ZRH", "CDG", "AMS", "LHR", "FCO"]
 
-notify_github_user = "kamenlevi"   # mentioned in the daily issue so GitHub emails it
+notify_github_user = "kamenlevi"
+# Trips leaving Sofia in these months are marked "December pick" and listed first:
+# Kamen's mum is between jobs in December 2026. School days in them still count as missed.
+recommended_months = ["2026-12"]   # mentioned in the daily issue so GitHub emails it
 
 [budget_pp_eur]
 economy = 1200

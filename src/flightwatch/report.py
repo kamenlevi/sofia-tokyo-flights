@@ -6,7 +6,7 @@ from flightwatch.history import trend
 
 
 def rank(results: list[Result]) -> list[Result]:
-    return sorted(results, key=lambda r: (bool(r.problems), r.school_days, r.price_pp))
+    return sorted(results, key=lambda r: (bool(r.problems), not r.december_pick, r.school_days, r.price_pp))
 
 
 def _eur(x: float) -> str:
@@ -80,10 +80,10 @@ def _row(r: Result, hist: dict) -> str:
         warn += "<li>Separate tickets: if the first flight is late, the next airline will not rebook you.</li>"
     extra = "".join(f"<li>{escape(e)}</li>" for e in r.extra_legroom) or "<li>not verified</li>"
     return f"""<tr class="{'ok' if ok else 'near'}" data-cabin="{t.cabin}" data-party="{t.party}" data-school="{r.school_days}"
- data-rec="{int(r.recommended)}" data-st="{int(t.self_transfer)}" data-off="{int(off)}" data-price="{r.price_pp:.0f}">
+ data-rec="{int(r.recommended)}" data-dec="{int(r.december_pick)}" data-st="{int(t.self_transfer)}" data-off="{int(off)}" data-price="{r.price_pp:.0f}">
 <td data-v="{r.price_pp:.0f}"><b>{_eur(r.price_pp)}</b> pp<br>{_eur(r.price_pp * t.party)} total for {t.party}<br>
 <small>23 kg bag included{', meals add ' + _eur(r.meal_addon_pp) + ' pp' if r.meal_addon_pp else ''}</small><br><small>{escape(trend(hist, t.key))}</small></td>
-<td data-v="{t.outbound.dep:%Y%m%d}">{t.cabin.replace('-', ' ')}<br>{t.outbound.dep:%a %d %b} → {t.inbound.arr:%a %d %b %Y}<br>
+<td data-v="{t.outbound.dep:%Y%m%d}">{'<b class=pick>December pick: mum is free</b><br>' if r.december_pick else ''}{t.cabin.replace('-', ' ')}<br>{t.outbound.dep:%a %d %b} → {t.inbound.arr:%a %d %b %Y}<br>
 <b>{t.stay_days} days</b> in Japan{' (recommended)' if r.recommended else ''}<br>
 <small>{escape(japan_text(r))}</small><br><small>{escape(days_text(r))}</small></td>
 <td data-v="{r.school_days}">{r.school_days}</td>
@@ -100,7 +100,7 @@ body{background:var(--bg);color:var(--fg);font:14px/1.4 -apple-system,system-ui,
 table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--line);padding:8px;vertical-align:top;text-align:left}
 th{cursor:pointer;position:sticky;top:0;background:var(--bg)}tr.ok{background:var(--ok)}tr.near{background:var(--near)}
 small,.lay,.tot{color:var(--mut)}.arr{font-weight:600;margin-top:4px}a{color:var(--acc)}.warn{color:#b3261e}
-.banner{padding:10px;border:1px solid var(--line);margin-bottom:12px}.filters label{margin-right:12px}
+.pick{color:var(--acc)}.banner{padding:10px;border:1px solid var(--line);margin-bottom:12px}.filters label{margin-right:12px}
 """
 
 SCRIPT = """
@@ -110,6 +110,7 @@ function apply(){const f=id=>document.getElementById(id);
   if(f('cabin').value&&r.dataset.cabin!==f('cabin').value)show=false;
   if(f('party').value&&r.dataset.party!==f('party').value)show=false;
   if(f('rec').checked&&r.dataset.rec!=='1')show=false;
+  if(f('dec').checked&&r.dataset.dec!=='1')show=false;
   if(f('through').checked&&r.dataset.st==='1')show=false;
   if(f('off').checked&&r.dataset.off!=='1')show=false;
   if(f('ok').checked&&!r.classList.contains('ok'))show=false;
@@ -138,13 +139,15 @@ def render_html(results: list[Result], cov, today: date, hist: dict, calendar_so
 <h1>Sofia ↔ Tokyo, {today:%d %b %Y}</h1>
 <div class=banner>{escape(_coverage_line(cov))}<ul>{failures}</ul>
 <small>Prices from Google Flights (cheapest seller). The airline's own price can be a little higher; open the link to check.
+December trips come first: mum is free then. School days in them still count as missed.
 Green rows are under budget (economy €1,200 / premium economy €1,300 per person, 23 kg bag included); yellow rows are within 10%.
-School days use the official calendar: {escape(calendar_source)}. All of December counts as off.</small></div>
+School days use the official calendar: {escape(calendar_source)}.</small></div>
 {capped}<div class=filters><label>Cabin <select id=cabin><option value="">all</option><option value=economy>economy</option>
 <option value=premium-economy>premium economy</option></select></label>
 <label>People <select id=party><option value="">all</option><option>4</option><option>3</option></select></label>
 <label><input type=checkbox id=ok checked> under budget only</label>
 <label><input type=checkbox id=rec> 14+ days only</label>
+<label><input type=checkbox id=dec> December picks only</label>
 <label><input type=checkbox id=through> one ticket only</label>
 <label><input type=checkbox id=off> leaves Fri/Sat</label>
 <label>Max school days <input id=school type=number min=0 style="width:4em"></label></div>
@@ -166,9 +169,12 @@ def render_email(results: list[Result], cov, today: date, hist: dict) -> tuple[s
     if not cov.complete:
         subject = f"SOF–TYO: INCOMPLETE search ({_pct(cov)}% checked), {len(deals)} deal(s) found so far"
     elif deals:
-        best = deals[0]
+        cheapest = min(deals, key=lambda r: r.price_pp)
+        decs = [r for r in deals if r.december_pick]
         subject = (f"SOF–TYO: {len(deals)} deal{'s' if len(deals) != 1 else ''} under budget, "
-                   f"best {_eur(best.price_pp)} pp, {best.school_days} school days")
+                   f"best {_eur(cheapest.price_pp)} pp")
+        if decs:
+            subject += f", December from {_eur(min(r.price_pp for r in decs))} pp"
     else:
         cheapest = min((r.price_pp for r in ranked), default=None)
         subject = "SOF–TYO: no deals under budget today" + (f" (closest {_eur(cheapest)} pp)" if cheapest else "")
@@ -201,7 +207,8 @@ def render_issue(results: list[Result], cov, today: date, hist: dict, mention: s
         lines += ["", "No trip came within 10% of the budget today."]
     else:
         lines += ["", f"{'Best' if deals else 'Closest'} {len(top)} of {len(deals) if deals else len(ranked):,} "
-                      f"{'trips under budget' if deals else 'trips (none under budget)'}, fewest school days first:", "",
+                      f"{'trips under budget' if deals else 'trips (none under budget)'}: December picks first (mum is free then), "
+                      f"then fewest school days, then cheapest:", "",
                       "| € pp | total | cabin | people | dates | in Japan | days away (school days, holidays) | flights | trend | book |",
                   "|---|---|---|---|---|---|---|---|---|---|"]
     for r in top:
@@ -210,7 +217,7 @@ def render_issue(results: list[Result], cov, today: date, hist: dict, mention: s
                    + " / " + " + ".join(f"{s.code} {s.origin}→{s.destination} {s.dep:%d %b %H:%M}" for s in t.inbound.segments))
         books = " ".join(f"[{i + 1}]({u})" for i, (_, u) in enumerate(r.booking))
         lines.append(f"| {_eur(r.price_pp)} | {_eur(r.price_pp * t.party)} | {t.cabin.replace('-', ' ')} | {t.party} | "
-                     f"{t.outbound.dep:%a %d %b} → {t.inbound.arr:%a %d %b %Y} | {_md(japan_text(r))} | {_md(days_text(r))} | "
+                     f"{'**December pick** ' if r.december_pick else ''}{t.outbound.dep:%a %d %b} → {t.inbound.arr:%a %d %b %Y} | {_md(japan_text(r))} | {_md(days_text(r))} | "
                      f"{_md(flights)}{' (separate tickets)' if t.self_transfer else ''} | {_md(trend(hist, t.key))} | {books} |")
     lines += ["", "Prices are Google Flights' cheapest seller with a 23 kg bag; the airline's own price can be a little higher. "
               "The full report with legroom, seat plans and meals is attached to each run's summary in the Actions tab "

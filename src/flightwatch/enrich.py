@@ -32,6 +32,7 @@ class Result:
     extra_legroom: tuple[str, ...]
     booking: tuple[tuple[str, str], ...]
     days: object = None               # DayBreakdown from leaving Sofia to getting home
+    december_pick: bool = False       # leaves in a recommended month (mum is free in December 2026)
 
     @property
     def japan_nights(self) -> int:
@@ -89,4 +90,5 @@ def enrich(trip: Trip, cfg, airlines: AirlineTable, cal) -> Result:
     return Result(trip, tuple(views["out"]), tuple(views["in"]), addon, trip.per_person_eur + addon, problems,
                   cal.school_days_missed(trip.outbound.dep.date(), home),
                   trip.stay_days >= cfg.stay_recommended, tuple(extra), tuple(booking),
-                  cal.breakdown(trip.outbound.dep.date(), home))
+                  cal.breakdown(trip.outbound.dep.date(), home),
+                  f"{trip.outbound.dep:%Y-%m}" in cfg.recommended_months)

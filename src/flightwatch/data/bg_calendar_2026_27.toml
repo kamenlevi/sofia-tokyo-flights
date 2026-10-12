@@ -12,7 +12,6 @@ school_year_end = "2027-07-02"
 next_school_year_start = "2027-09-15"
 off = [
   ["2026-10-31", "2026-11-02"],   # autumn holiday (есенна ваканция), includes Sun 1 Nov Day of the National Awakeners
-  ["2026-12-01", "2026-12-31"],   # Kamen: all of December counts as off
   ["2026-12-24", "2027-01-03"],   # Christmas holiday (коледна ваканция); public holidays 24-26 Dec + Mon 28 Dec (26 Dec falls on Sat); 1 Jan 2027 Fri
   ["2027-01-30", "2027-02-02"],   # mid-year holiday (междусрочна ваканция); 2nd term starts Wed 3 Feb
   ["2027-03-03", "2027-03-03"],   # Liberation Day, public holiday (Wed)

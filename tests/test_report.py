@@ -88,3 +88,23 @@ def test_rows_show_japan_days_and_trip_day_breakdown():
     for text in (body, html):
         assert "14 nights" in text and "13 full days" in text
         assert "17 days away" in text and "11 weekdays" in text and "6 weekend days" in text
+
+
+
+def test_december_trips_are_recommended_and_ranked_first():
+    from flightwatch.report import render_issue
+    march = result(4000)                                     # €1,000 pp, March
+    dec = result(4600, out_day=5)
+    dec = enrich(replace_dates(dec.trip, 2026, 12), CFG, AirlineTable({}), CAL)   # €1,150 pp, December
+    assert dec.december_pick and not march.december_pick
+    assert rank([march, dec])[0] is dec
+    title, body = render_issue([march, dec], FULL, date(2026, 10, 12), {}, mention="kamenlevi")
+    assert "December pick" in body and "December" in title
+
+
+def replace_dates(trip, year, month):
+    from dataclasses import replace as rp
+    def leg(l):
+        return rp(l, segments=tuple(rp(s, dep=s.dep.replace(year=year, month=month), arr=s.arr.replace(year=year, month=month))
+                                    for s in l.segments))
+    return rp(trip, outbound=leg(trip.outbound), inbound=leg(trip.inbound))

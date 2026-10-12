@@ -32,6 +32,7 @@ class Config:
     city_pairs: tuple[frozenset[str], ...]
     notify_github_user: str = "kamenlevi"
     shard_deadline_minutes: int = 50
+    recommended_months: tuple[str, ...] = ()
 
 
 def load_config(path: Path | None = None) -> Config:
