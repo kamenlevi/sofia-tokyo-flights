@@ -15,14 +15,15 @@ Each result says how many school days it misses. The count uses the official Bul
 
 - The daily run is plain Python. It makes no AI or Claude calls and uses no paid APIs.
 - It runs on GitHub Actions in this public repo, where standard runners are free.
-- Email goes through Gmail.
+- The daily summary arrives as a GitHub issue, which GitHub emails to you. No mail password is needed.
 - Search results and price history are stored **encrypted**, so this public repo shows only the code and settings.
 
-## Reading the daily email
+## Reading the daily email (a GitHub issue)
 
+- **Where:** GitHub emails each new issue to you (the repo owner, mentioned in it). The previous day's issue is closed automatically.
 - **Subject line:** tells you how many deals are under budget, the best price per person, and its school days.
 - **INCOMPLETE:** if the subject says this, some searches failed. Missing results then do **not** mean there are no deals.
-- **Attached report:** open the `report.html` attachment in a browser.
+- **Full report:** the issue lists the best 30 trips. For legroom, seat plans and meals, open that day's run in the Actions tab, download the *report* artifact and open `report.html` in a browser.
   - Green rows are under budget. Yellow rows are within 10% of budget.
   - Click a column header to sort.
   - Use the filters for cabin, number of people, 14+ day stays, one-ticket trips, Friday/Saturday departures, and a maximum number of school days.
@@ -44,28 +45,17 @@ Each result says how many school days it misses. The count uses the official Bul
    ```bash
    .venv/bin/python -c "from flightwatch.crypto import new_key; print(new_key())"
    ```
-2. Create a Gmail app password:
-   - go to Google Account → Security → 2-Step Verification → App passwords;
-   - create one named "flightwatch".
-3. Add 4 secrets to the GitHub repo. Run each command in your terminal; it asks for the value:
+2. Add the key as a GitHub secret and to the Keychain:
    ```bash
    gh secret set FLIGHTWATCH_KEY --repo kamenlevi/sofia-tokyo-flights
-   gh secret set GMAIL_USER --repo kamenlevi/sofia-tokyo-flights      # kamenlevi@gmail.com
-   gh secret set GMAIL_APP_PASSWORD --repo kamenlevi/sofia-tokyo-flights
-   gh secret set MAIL_TO --repo kamenlevi/sofia-tokyo-flights         # kamenlevi@gmail.com
-   ```
-4. For the Mac backup, store the same values in your Keychain. Each command asks for the value:
-   ```bash
    security add-generic-password -s flightwatch-key -a "$USER" -w
-   security add-generic-password -s flightwatch-gmail-user -a "$USER" -w
-   security add-generic-password -s flightwatch-gmail-app-password -a "$USER" -w
    ```
 
 ## Mac backup
 
 `mac/com.kamen.flightwatch.plist` runs `mac/fallback.sh` every day at 12:00:
 - If today's GitHub run succeeded, it does nothing.
-- If the run failed, the Mac runs the whole search itself (several hours, kept awake with `caffeinate`) and sends the email.
+- If the run failed, the Mac runs the whole search itself (several hours, kept awake with `caffeinate`) and posts the issue.
 - If the Mac was asleep at noon, the job runs when it next wakes.
 
 Install the job:

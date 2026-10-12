@@ -163,3 +163,37 @@ def render_email(results: list[Result], cov, today: date, hist: dict) -> tuple[s
             + "".join(f"<li>{escape(_line(r))} <a href=\"{escape(r.booking[0][1])}\">book</a></li>" for r in top)
             + "</ol><p>Full report attached.</p>")
     return subject, text, html
+
+
+ISSUE_ROWS = 30
+
+
+def _md(s: str) -> str:
+    return s.replace("|", "\\|")
+
+
+def render_issue(results: list[Result], cov, today: date, hist: dict, mention: str) -> tuple[str, str]:
+    """A GitHub issue: GitHub emails it to the repo owner, so no mail password is needed."""
+    subject, _, _ = render_email(results, cov, today, hist)
+    title = subject.replace("SOF–TYO:", f"SOF–TYO {today.isoformat()}:", 1)
+    ranked = rank(results)
+    deals = [r for r in ranked if not r.problems]
+    top = (deals or ranked)[:ISSUE_ROWS]
+    lines = [f"@{mention} daily Sofia ↔ Tokyo results.", "", _coverage_line(cov)]
+    lines += [f"- {_md(f)}" for f in cov.failures[:10]]
+    lines += ["", f"{'Best' if deals else 'Closest'} {len(top)} of {len(deals) if deals else len(ranked):,} "
+                  f"{'trips under budget' if deals else 'trips (none under budget)'}, fewest school days first:", "",
+              "| € pp | total | cabin | people | dates | days | school days | flights | trend | book |",
+              "|---|---|---|---|---|---|---|---|---|---|"]
+    for r in top:
+        t = r.trip
+        flights = (" + ".join(f"{s.code} {s.origin}→{s.destination} {s.dep:%d %b %H:%M}" for s in t.outbound.segments)
+                   + " / " + " + ".join(f"{s.code} {s.origin}→{s.destination} {s.dep:%d %b %H:%M}" for s in t.inbound.segments))
+        books = " ".join(f"[{i + 1}]({u})" for i, (_, u) in enumerate(r.booking))
+        lines.append(f"| {_eur(r.price_pp)} | {_eur(r.price_pp * t.party)} | {t.cabin.replace('-', ' ')} | {t.party} | "
+                     f"{t.outbound.dep:%a %d %b} → {t.inbound.arr:%a %d %b %Y} | {t.stay_days} | {r.school_days} | "
+                     f"{_md(flights)}{' (separate tickets)' if t.self_transfer else ''} | {_md(trend(hist, t.key))} | {books} |")
+    lines += ["", "Prices are Google Flights' cheapest seller with a 23 kg bag; the airline's own price can be a little higher. "
+              "The full report with legroom, seat plans and meals is attached to each run's summary in the Actions tab "
+              "(open the run, then *report*)."]
+    return title, "\n".join(lines)

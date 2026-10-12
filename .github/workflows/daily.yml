@@ -39,6 +39,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write
+      issues: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,13 +53,25 @@ jobs:
           pattern: shard-*
           merge-multiple: true
       - id: report
-        run: mkdir -p shards && flightwatch report --shards shards --history history/history.bin --out report.html --expected 48
+        continue-on-error: true      # an INCOMPLETE run still posts its issue and saves history
+        run: mkdir -p shards && flightwatch report --shards shards --history history/history.bin --out report.html --expected 48 --no-email --issue issue
         env:
           FLIGHTWATCH_KEY: ${{ secrets.FLIGHTWATCH_KEY }}
-          GMAIL_USER: ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-          MAIL_TO: ${{ secrets.MAIL_TO }}
-      # The daily commit also keeps the repo active, so GitHub does not disable the schedule after 60 idle days
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: report
+          path: report.html
+          retention-days: 7
+          if-no-files-found: ignore
+      # GitHub emails new issues to the repo owner (mentioned in the body), so no mail password is needed
+      - if: always() && hashFiles('issue.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create daily --color 0E8A16 --description "Daily flight results" --force
+          for n in $(gh issue list --label daily --state open --json number -q '.[].number'); do gh issue close "$n"; done
+          gh issue create --label daily --title "$(cat issue.title)" --body-file issue.md
       - if: always()
         run: |
           git config user.name "flightwatch"
@@ -66,3 +79,5 @@ jobs:
           git add history/history.bin
           git commit -m "History $(date -u +%F)" || echo "no change"
           for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep 10; done
+      - if: steps.report.outcome == 'failure'
+        run: echo "search incomplete; see today's issue" && exit 1     # a red run lets the Mac fallback take over

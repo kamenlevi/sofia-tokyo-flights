@@ -48,3 +48,14 @@ def test_fallback_check_network_error_is_unknown(monkeypatch):
     with pytest.raises(SystemExit) as e:
         cli.main(["fallback-check", "--repo", "x/y"])
     assert e.value.code == 2
+
+
+def test_report_writes_github_issue_files(tmp_path, monkeypatch):
+    monkeypatch.setenv("FLIGHTWATCH_KEY", new_key())
+    monkeypatch.setattr(cli, "make_transport", lambda: transport)
+    monkeypatch.setattr(cli, "today", lambda: date(2027, 1, 10))
+    cli.main(["local", "--limit-days", "1", "--no-email", "--no-hubs", "--interval", "0",
+              "--history", str(tmp_path / "h.bin"), "--out", str(tmp_path / "r.html"),
+              "--issue", str(tmp_path / "issue")])
+    assert "deal" in (tmp_path / "issue.title").read_text()
+    assert "TK50" in (tmp_path / "issue.md").read_text()

@@ -20,6 +20,8 @@ hub_rotation_days = 7
 hubs = ["IST", "DOH", "DXB", "FRA", "MUC", "WAW", "HEL"]
 hubs_disabled = ["AUH", "VIE", "ZRH", "CDG", "AMS", "LHR", "FCO"]
 
+notify_github_user = "kamenlevi"   # mentioned in the daily issue so GitHub emails it
+
 [budget_pp_eur]
 economy = 1200
 "premium-economy" = 1300

@@ -30,6 +30,7 @@ class Config:
     same_airport_min: int
     city_change_min: int
     city_pairs: tuple[frozenset[str], ...]
+    notify_github_user: str = "kamenlevi"
 
 
 def load_config(path: Path | None = None) -> Config:

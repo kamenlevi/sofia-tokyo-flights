@@ -63,3 +63,18 @@ def test_attachment_is_capped_to_stay_under_email_limits():
     html = render_html(many, FULL, date(2026, 10, 12), {}, CAL.source)
     assert html.count("<tr class=") == 500
     assert "best 500 of 600" in html
+
+
+def test_issue_summary_mentions_owner_and_lists_deals():
+    from flightwatch.report import render_issue
+    title, body = render_issue([result(4400)], FULL, date(2026, 10, 12), {}, mention="kamenlevi")
+    assert title.startswith("SOF–TYO 2026-10-12: 1 deal under budget")
+    assert "@kamenlevi" in body and "TK50" in body and "€1,100" in body
+    assert "https://www.google.com/travel/flights/booking?tfs=x" in body
+
+
+def test_issue_for_incomplete_run_says_so():
+    from flightwatch.report import render_issue
+    cov = Coverage(pairs_planned=10, pairs_done=4, failures=["HTTP 503"], shards_seen=1, shards_expected=1)
+    title, body = render_issue([], cov, date(2026, 10, 12), {}, mention="kamenlevi")
+    assert "INCOMPLETE" in title and "HTTP 503" in body

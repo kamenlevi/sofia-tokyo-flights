@@ -15,7 +15,7 @@ from flightwatch.dates import today_in
 from flightwatch.enrich import enrich
 from flightwatch.google.client import GoogleClient, primp_transport
 from flightwatch.notify import send_email
-from flightwatch.report import render_email, render_html
+from flightwatch.report import render_email, render_html, render_issue
 from flightwatch.shard import ShardResult, merge_shards, run_shard, save_shard
 
 
@@ -64,6 +64,10 @@ def _report(res: ShardResult, args, day: date) -> None:
     subject, text, body = render_email(shown, res.coverage, day, hist)
     if not os.environ.get("CI"):          # CI logs of a public repo are public: keep prices out of them
         print(subject)
+    if args.issue:
+        title, issue_body = render_issue(shown, res.coverage, day, hist, mention=cfg.notify_github_user)
+        Path(args.issue + ".title").write_text(title)
+        Path(args.issue + ".md").write_text(issue_body)
     if not args.no_email:
         send_email(subject, text, body, html)
     if not res.coverage.complete:
@@ -83,6 +87,7 @@ def main(argv=None):
         p.add_argument("--history", default="history/history.bin")
         p.add_argument("--no-email", action="store_true")
         p.add_argument("--out", default="report.html")
+        p.add_argument("--issue", help="also write a GitHub issue to ISSUE.title and ISSUE.md")
     shard_p.add_argument("--index", type=int, required=True)
     shard_p.add_argument("--total", type=int, required=True)
     shard_p.add_argument("--out", required=True)

@@ -12,10 +12,11 @@ case $? in
   2) echo "$(date) could not reach GitHub; not starting a run"; exit 0 ;;
 esac
 export FLIGHTWATCH_KEY="$(security find-generic-password -s flightwatch-key -w)"
-export GMAIL_USER="$(security find-generic-password -s flightwatch-gmail-user -w)"
-export GMAIL_APP_PASSWORD="$(security find-generic-password -s flightwatch-gmail-app-password -w 2>/dev/null)"
-export MAIL_TO="$GMAIL_USER"
-if [ -z "$GMAIL_APP_PASSWORD" ]; then echo "$(date) no Gmail app password in Keychain; not running"; exit 0; fi
+export PATH="$PATH:/opt/homebrew/bin"   # gh
 git pull --ff-only
-caffeinate -i flightwatch local --history history/history.bin --out report.html
+caffeinate -i flightwatch local --history history/history.bin --out report.html --no-email --issue /tmp/flightwatch-issue
+for n in $(gh issue list --repo kamenlevi/sofia-tokyo-flights --label daily --state open --json number -q '.[].number'); do
+  gh issue close "$n" --repo kamenlevi/sofia-tokyo-flights; done
+gh issue create --repo kamenlevi/sofia-tokyo-flights --label daily \
+  --title "$(cat /tmp/flightwatch-issue.title) (from the Mac)" --body-file /tmp/flightwatch-issue.md
 git add history/history.bin && git commit -m "History $(date +%F) (Mac fallback)" && git push
